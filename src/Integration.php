@@ -2,12 +2,31 @@
 
 namespace Phacil\Component\Integration;
 
-use \FluentPDO as FluentPDO;
+use \PDO as PDO;
 
 class Integration {
         
+    private static $config = 'default';
     protected static $dbConfigs = [];
-    public static $configName = 'default';
+    
+    static function getConfig($config = 'default') {
+        if(isset(self::$dbConfigs[$config])){
+            return self::$dbConfigs[$config];
+        }
+        throw new Exception("Config não esiste");
+    }
+
+    static function getDbConfigs() {
+        return self::$dbConfigs;
+    }
+
+    static function useConfig($config) {
+        self::$config = $config;
+    }
+    
+    static function getActualConfig(){
+        return self::$config;
+    }
     
     public static function storeConnection($config = [], $configName = 'default'){
         $config['driver']	= isset($config['driver']) ? $config['driver'] : 'mysql';
@@ -15,7 +34,7 @@ class Integration {
         $config['charset']	= isset($config['charset']) ? $config['charset'] : 'utf8';
         $config['collation']    = isset($config['collation']) ? $config['collation'] : 'utf8_general_ci';
         $config['prefix']	= isset($config['prefix']) ? $config['prefix'] : '';
-        $this->prefix		= $config['prefix'];
+        //self::$prefix		= $config['prefix'];
 
         if ($config['driver'] == 'mysql' || $config['driver'] == '' || $config['driver'] == 'pgsql'){
             $dsn = $config['driver'] . ':host=' . $config['host'] . ';dbname=' . $config['database'];
@@ -26,32 +45,16 @@ class Integration {
         }
 
         try{
-            $this->pdo = new PDO($dsn, $config['username'], $config['password']);
-            $this->pdo->exec("SET NAMES '".$config['charset']."' COLLATE '".$config['collation']."'");
-            $this->pdo->exec("SET CHARACTER SET '".$config['charset']."'");
-            $this->pdo->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
+            $pdo = new PDO($dsn, $config['username'], $config['password']);
+            $pdo->exec("SET NAMES '".$config['charset']."' COLLATE '".$config['collation']."'");
+            $pdo->exec("SET CHARACTER SET '".$config['charset']."'");
+            $pdo->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
+            $pdo->setAttribute(PDO::ATTR_FETCH_TABLE_NAMES, true);
             
-            self::$dbConfigs[$configName] = new FluentPDO($this->pdo);
+            self::$dbConfigs[$configName] = $pdo;
             return true;
         }catch (PDOException $e){
             die('Cannot the connect to Database with PDO.<br /><br />'.$e->getMessage());
         }        
-    }
-
-    public static function __callStatic($name, $arguments) {
-        
-        $connection = self::$dbConfigs[self::$configName];
-        
-        if(method_exists($connection, $name)){
-            return call_user_func_array(array($connection, $name), $arguments);
-        }else{
-              $connection2 = call_user_func_array(array($connection,'from'), (array) $name);
-        
-//            $args = !empty($arguments)?$arguments:array('1', '1');
-//
-//            return call_user_func_array(array($connection2,'where'), $args);
-              
-              return $connection2;
-        }
     }
 }

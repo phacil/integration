@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "a6ad58d4f2adba066a4cd4ba32941bc3",
+    "hash": "dbae1d088c7e9ec633a57029f8b1c424",
     "content-hash": "a3d2a6d2f432a7e23fa6f492e3fac054",
     "packages": [
         {
@@ -13,12 +13,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/envms/fluentpdo.git",
-                "reference": "1ca220215ce5a3a56ac6bbe825c6d8955ef49b4c"
+                "reference": "c50768561a9470f8c840cdaf409bac9d5c5d054d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/envms/fluentpdo/zipball/1ca220215ce5a3a56ac6bbe825c6d8955ef49b4c",
-                "reference": "1ca220215ce5a3a56ac6bbe825c6d8955ef49b4c",
+                "url": "https://api.github.com/repos/envms/fluentpdo/zipball/c50768561a9470f8c840cdaf409bac9d5c5d054d",
+                "reference": "c50768561a9470f8c840cdaf409bac9d5c5d054d",
                 "shasum": ""
             },
             "type": "library",
@@ -45,7 +45,7 @@
                 "dbal",
                 "pdo"
             ],
-            "time": "2016-07-15 13:16:47"
+            "time": "2016-10-06 11:45:37"
         }
     ],
     "packages-dev": [
@@ -243,16 +243,16 @@
         },
         {
             "name": "phpunit/php-token-stream",
-            "version": "1.4.8",
+            "version": "1.4.9",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/php-token-stream.git",
-                "reference": "3144ae21711fb6cac0b1ab4cbe63b75ce3d4e8da"
+                "reference": "3b402f65a4cc90abf6e1104e388b896ce209631b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/php-token-stream/zipball/3144ae21711fb6cac0b1ab4cbe63b75ce3d4e8da",
-                "reference": "3144ae21711fb6cac0b1ab4cbe63b75ce3d4e8da",
+                "url": "https://api.github.com/repos/sebastianbergmann/php-token-stream/zipball/3b402f65a4cc90abf6e1104e388b896ce209631b",
+                "reference": "3b402f65a4cc90abf6e1104e388b896ce209631b",
                 "shasum": ""
             },
             "require": {
@@ -288,7 +288,7 @@
             "keywords": [
                 "tokenizer"
             ],
-            "time": "2015-09-15 10:49:45"
+            "time": "2016-11-15 14:06:22"
         },
         {
             "name": "phpunit/phpunit",
@@ -624,16 +624,16 @@
         },
         {
             "name": "symfony/yaml",
-            "version": "v2.8.10",
+            "version": "v2.8.14",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/yaml.git",
-                "reference": "e7540734bad981fe59f8ef14b6fc194ae9df8d9c"
+                "reference": "befb26a3713c97af90d25dd12e75621ef14d91ff"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/yaml/zipball/e7540734bad981fe59f8ef14b6fc194ae9df8d9c",
-                "reference": "e7540734bad981fe59f8ef14b6fc194ae9df8d9c",
+                "url": "https://api.github.com/repos/symfony/yaml/zipball/befb26a3713c97af90d25dd12e75621ef14d91ff",
+                "reference": "befb26a3713c97af90d25dd12e75621ef14d91ff",
                 "shasum": ""
             },
             "require": {
@@ -669,7 +669,7 @@
             ],
             "description": "Symfony Yaml Component",
             "homepage": "https://symfony.com",
-            "time": "2016-09-02 01:57:56"
+            "time": "2016-11-14 16:15:57"
         }
     ],
     "aliases": [],
