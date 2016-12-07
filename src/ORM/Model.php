@@ -9,7 +9,6 @@
 namespace Phacil\Component\Integration\ORM;
 
 use Phacil\Component\Integration\Integration;
-use Phacil\Component\Integration\Database\Query;
 
 /**
  * Description of Model
@@ -17,6 +16,9 @@ use Phacil\Component\Integration\Database\Query;
  * @author alisson
  */
 class Model {
+    
+    use TableTrait;
+    
     private $associations;
     private $table_name;
     private $table_alias;
@@ -25,11 +27,7 @@ class Model {
 
     function __construct()
     {
-        $this->init();
-    }
 
-    function init() {
-        
     }
 
     function primary_key($primary_key = null)
@@ -46,7 +44,8 @@ class Model {
     {
         if (empty($this->table_name) || $table_name)
         {
-            $generated_table_name = strtolower(get_class($this));
+            $table = explode('\\', strtolower(get_class($this)));
+            $generated_table_name = end($table);
             $this->table_name = $table_name ? $table_name : $generated_table_name;
         }
 
@@ -75,13 +74,37 @@ class Model {
     public function find($options = [])
     {
         $table = $this->table_name();
-        return ORMQuery::$table();
+        
+        $query = ORMQuery::$table();
+        
+        foreach($this->associations as $assoc){
+            
+            if($assoc['type'] == 'belongs_to'){
+                
+                $_table_name = $this->assoc_table_name(ORMQuery::$baseNamespace, $assoc['name']);
+                
+                $query->join(   $_table_name, 
+                                $_table_name . '.' . $this->primary_key(),
+                                $this->table_name() . '.'. $assoc['options']['foreign_key']
+                            );
+            }else if($assoc['type'] == 'has_many'){
+                $query->children[] = $assoc;
+            }
+        }
+        
+        return $query;
     }
 /**/
     /*! Associations */
     function associations()
     {
         return $this->associations;
+    }
+
+    function cleanAssociations()
+    {
+        $this->associations = [];
+        return $this;
     }
     
     function belongs_to($name, $options = null)

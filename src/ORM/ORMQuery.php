@@ -8,54 +8,83 @@
 
 namespace Phacil\Component\Integration\ORM;
 
+use Phacil\Component\Integration\Database\Query;
+use Phacil\Component\Integration\Integration;
+
 /**
  * Description of ORMQuery
  *
  * @author alisson
  */
-class ORMQuery extends \Phacil\Component\Integration\Database\Query{
+
+class ORMQuery extends Query implements \IteratorAggregate{
     
-    private function injectRow($data){
-        return new ORMRow($data);
+    use TableTrait;
+    
+    private $model;
+    public $children = [];
+    public static $baseNamespace = "\\";
+    
+    protected function injectRow($data){        
+        return new ORMRow($data, $this->model);
     }
     
-    protected function getAll($array = false, $all = false, $reset = true){
-        $query = 'SELECT ' . $this->select . ' FROM ' . $this->from;
-
-        if (!is_null($this->join)){
-            $query .= $this->join;
+    private function isClass($assoc_name){
+        if(strpos($assoc_name, '\\') !== false){
+            return true;
         }
+        return false;
+    }
 
-        if (!is_null($this->where)){
-            $query .= ' WHERE ' . $this->where;
-        }
-
-        if (!is_null($this->groupBy)){
-            $query .= ' GROUP BY ' . $this->groupBy;
-        }
-
-        if (!is_null($this->having)){
-            $query .= ' HAVING ' . $this->having;
-        }
-
-        if (!is_null($this->orderBy)){
-            $query .= ' ORDER BY ' . $this->orderBy;
-        }
-
-        if (!is_null($this->limit)){
-            $query .= ' LIMIT ' . $this->limit;
-        }
+    public function getAll($array = false, $all = false, $reset = true){
         
-        if (!is_null($this->offset)){
-            $query .= ' OFFSET ' . $this->offset;
-        }
+        $query = $this->buildQuery();
       
         $result = $this->query($query, $all, $array, $reset);
-        
+	
         foreach($result as $data){
+            $_data = (array) $data;
+            foreach($this->children as $child){
+
+                $_table_name = $this->assoc_table_name(ORMQuery::$baseNamespace, $child['name']);
+                print_r($_table_name);
+
+                if($this->isClass($child['name'])){
+                    $_class = ucwords($child['name'], ' \\');
+                    $class = self::$baseNamespace . $_class;
+                    $childObject = new $class();
+                    $query = $childObject->cleanAssociations()
+                            ->find();
+                }else{
+                    $query = self::__callStatic($_table_name,[]);                        
+                }
+
+                $query->where([$_table_name . '.' . $child['options']['foreign_key']=>
+                            $_data[$this->model.'.id']]);                                
+
+                $data->{$_table_name} = $query->get();
+            }
            $collection[] = $this->injectRow($data);
         }
         return $collection;
+    }
+         
+    public static function __callStatic($name, $arguments) {
+        
+        $pdo = Integration::getConfig(Integration::getActualConfig());
+        $connection = new self($pdo);
+               
+        if(method_exists($connection, $name)){
+            return call_user_func_array(array($connection, $name), $arguments);
+        }else{
+            $connection->model = $name;
+            $connection2 = call_user_func_array(array($connection,'from'), (array) $name);
+            if(empty($arguments)){
+                return $connection2;
+            }else{
+                return call_user_func_array(array($connection2,'where'), $arguments);
+            }
+        }
     }
     
 }

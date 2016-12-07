@@ -6,15 +6,15 @@
  * and open the template in the editor.
  */
 
-namespace Phacil\Component\Integration\ORM;
-
-use Phacil\Component\Integration\Database\Row;
+namespace Phacil\Component\Integration\Database;
 
 /**
- * Description of ORMRow
+ * Description of PDOUtilsTrait
  *
  * @author alisson
  */
-class ORMRow extends Row{
-    
+trait PDOUtilsTrait {
+    public function escape($data) {
+        return $this->pdo->quote(trim($data));
+    }
 }

@@ -14,27 +14,13 @@ namespace Phacil\Component\Integration\Database;
  * @author alisson
  */
 class Row {
-    //public $model;
-    private $data;
-
-    function __construct($data)
+    //public $table;
+    
+    function __construct($data, $model = null)
     {
-        //$this->model = $model;
-        $this->data = new \stdClass();
-
-        foreach ($data as $key => $value)
-        {
-            if(strpos($key, '.') !== false){                
-                list($model, $field) = explode('.', $key);
-                if(!isset($this->$model)){
-                    $this->data->$model = $this->$model = new \stdClass();                    
-                }                
-                $this->data->$model->$field = $this->$model->$field = $value;
-            }else{                
-                $this->$key = $this->data->$key = $value;
-                
-            }            
-        }
+        //$this->model = $table;
+        $this->data($data, $model);
+        
     }
 	
 /*	function add_data($key, $value)
@@ -48,9 +34,27 @@ class Row {
             $this->update(array('updated' => 'NOW()'));
 	}
 */	
-    function data()
+    private function data($data, $model = null)
     {
-        return $this->data;
+        foreach ($data as $key => $value)
+        {
+            if(strpos($key, '.') !== false){                
+                list($table, $field) = explode('.', $key);
+                
+                if($model == $table){
+                    $this->$field = $value;
+                }else{
+                    if(!isset($this->$table)){
+                        $this->$table = new \stdClass();        
+                    } 
+                    $this->$table->$field = $value;
+                }
+                                
+            }else{                
+                $this->$key = $value;
+                
+            }            
+        }
     }
 	
 /*	function destroy()

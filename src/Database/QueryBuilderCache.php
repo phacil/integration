@@ -10,7 +10,7 @@
 *
 */
 
-namespace Phacil\Integration;
+namespace Phacil\Component\Integration\Database;
 
 class QueryBuilderCache{
     
