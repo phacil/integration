@@ -24,6 +24,7 @@ class Model {
     private $table_alias;
     private $primary_key;
     private $hooks;
+    private $prepareAssociation;
 
     function __construct()
     {
@@ -76,12 +77,12 @@ class Model {
         $table = $this->table_name();
         
         $query = ORMQuery::$table();
-        
+                
         foreach($this->associations as $assoc){
             
             if($assoc['type'] == 'belongs_to'){
                 
-                $_table_name = $this->assoc_table_name(ORMQuery::$baseNamespace, $assoc['name']);
+                $_table_name = $this->assoc_table_name(ORMQuery::$baseNamespace, $assoc);
                 
                 $query->join(   $_table_name, 
                                 $_table_name . '.' . $this->primary_key(),
@@ -94,9 +95,9 @@ class Model {
         
         return $query;
     }
-/**/
+
     /*! Associations */
-    function associations()
+    function getAssociations()
     {
         return $this->associations;
     }
@@ -107,22 +108,38 @@ class Model {
         return $this;
     }
     
-    function belongs_to($name, $options = null)
+    function table($name, $options = null)
     {
         $this->associations[] = array(
             'name' => $name,
-            'type' => 'belongs_to',
+            'type' => $this->prepareAssociation,
+            'to'=>'table',
             'options' => $options
         );
+        return $this;
+    }
+    
+    function model($name, $options = null)
+    {
+        $this->associations[] = array(
+            'name' => $name,
+            'type' => $this->prepareAssociation,
+            'to'=>'model',
+            'options' => $options
+        );
+        return $this;
+    }
+    
+    function belongs_to()
+    {
+        $this->prepareAssociation = 'belongs_to';
+        return $this;
     }
 
-    function has_many($name, $options = null)
+    function has_many()
     {
-            $this->associations[] = array(
-                    'name' => $name,
-                    'type' => 'has_many',
-                    'options' => $options
-            );
+        $this->prepareAssociation = 'has_many';
+        return $this;
     }
 
     function association($name)
@@ -136,7 +153,7 @@ class Model {
         }
         return null;
     }
-
+/* da qui pra cima funcionando */
     /*! Hooks */
     function before_save($name)
     {

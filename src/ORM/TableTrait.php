@@ -15,18 +15,25 @@ namespace Phacil\Component\Integration\ORM;
  */
 trait TableTrait {
    
-    private function assoc_table_name($base_namespace, $class_name){
-        if(strpos($class_name, '\\') !== false){
-            $_class = ucwords($class_name, ' \\');
-            $class = $base_namespace . $_class;
-
-            //$childObject = (new $class);
-            $parentObject = new $class();
-            
-            return $parentObject->table_name();
-        }else{
-            return $class_name;
+    private function assoc_table_name($base_namespace, $assoc){
+       
+        if($assoc['to'] == 'table'){
+            return strtolower($assoc['name']);
         }        
+        
+        //Mudar para Inflector
+        $_class = ucwords($assoc['name'], ' \\');
+        
+        if(strpos($assoc['name'], '\\') === false)            
+        {            
+            $_class .= '\\' . $_class;
+        }
+        
+        $class = $base_namespace . $_class;
+        
+        $parentObject = new $class();
+            
+        return $parentObject->table_name();        
     }
     
 }

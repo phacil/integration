@@ -41,27 +41,36 @@ class ORMQuery extends Query implements \IteratorAggregate{
         $query = $this->buildQuery();
       
         $result = $this->query($query, $all, $array, $reset);
-	
+	$collection = [];
+                
         foreach($result as $data){
             $_data = (array) $data;
             foreach($this->children as $child){
 
-                $_table_name = $this->assoc_table_name(ORMQuery::$baseNamespace, $child['name']);
-                print_r($_table_name);
+                $_table_name = $this->assoc_table_name(ORMQuery::$baseNamespace, $child);
+                //print_r($_table_name);
 
                 if($this->isClass($child['name'])){
                     $_class = ucwords($child['name'], ' \\');
                     $class = self::$baseNamespace . $_class;
                     $childObject = new $class();
-                    $query = $childObject->cleanAssociations()
+                    $query = $childObject
+                            ->cleanAssociations()
                             ->find();
                 }else{
                     $query = self::__callStatic($_table_name,[]);                        
                 }
-
-                $query->where([$_table_name . '.' . $child['options']['foreign_key']=>
-                            $_data[$this->model.'.id']]);                                
-
+                
+                if(isset($child['options']['by'])){
+                    $n_m = $child['options']['by'];
+                    $query->select($_table_name.'.*');
+                    $query->leftJoin($n_m, $n_m.'.'.$_table_name . '_id', $_table_name.'.id')
+                            ->where([$n_m . '.' . $child['options']['foreign_key']=>
+                            $_data[$this->model.'.id']]); 
+                }else{
+                    $query->where([$_table_name . '.' . $child['options']['foreign_key']=>
+                            $_data[$this->model.'.id']]);        
+                }
                 $data->{$_table_name} = $query->get();
             }
            $collection[] = $this->injectRow($data);

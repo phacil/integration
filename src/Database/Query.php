@@ -305,4 +305,8 @@ class Query implements IteratorAggregate
     function __destruct(){
         $this->pdo = null;
     }
+    
+    function __toString() {
+        return $this->buildQuery();
+    }
 }
