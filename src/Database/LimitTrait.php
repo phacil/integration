@@ -23,4 +23,6 @@ trait LimitTrait {
         $this->offset = $offset;
         return $this;
     }
+    
+    
 }

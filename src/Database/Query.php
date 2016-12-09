@@ -241,9 +241,16 @@ class Query implements IteratorAggregate
       
         $result = $this->query($query, $all, $array, $reset);
         
-        foreach($result as $data){
-           $collection[] = $this->injectRow($data);
-        }
+        //print_r($result);
+        if(!is_array($result)){
+            $collection = $this->injectRow($result);
+        }else{
+            $collection = [];
+            foreach($result as $data){
+                $collection[] = $this->injectRow($data);
+            }
+        }       
+        
         return $collection;
     }
     
@@ -300,6 +307,10 @@ class Query implements IteratorAggregate
  
     private function injectRow($data){
         return new Row($data);
+    }
+    
+    public function getNumRows(){
+        return $this->numRows;
     }
     
     function __destruct(){

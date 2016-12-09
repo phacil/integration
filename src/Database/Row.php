@@ -36,6 +36,7 @@ class Row {
 */	
     private function data($data, $model = null)
     {
+        
         foreach ($data as $key => $value)
         {
             if(strpos($key, '.') !== false){                

@@ -15,6 +15,11 @@ namespace Phacil\Component\Integration\Database;
  */
 trait OrderTrait {
     public function orderBy($orderBy, $order_dir = null){
+        
+        if(is_null($orderBy) || empty($orderBy)){
+            return $this;
+        }
+        
         if (!is_null($order_dir)){
             $this->orderBy = $orderBy . ' ' . strtoupper($order_dir);
         }
