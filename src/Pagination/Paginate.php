@@ -4,31 +4,33 @@ namespace Phacil\Component\Integration\Pagination;
 
 use Phacil\Component\Integration\Database\Query;
 use Phacil\Component\HTML\HTML as Html;
+use Phacil\Component\HTTP\Request;
+use Phacil\Component\Integration\Pagination\RouteBuilder as Route;
 
 use ICanBoogie\Inflector;
 
-class Pagination {
+class Paginate {
     
-    private $page;
-    private $orderBy = '';
-    private $direction = 'ASC';
+    private $page = null;
+    private $limit = null;
+    private $orderBy = null;
+    private $direction = null;
+    
     private $query = null;
     private $query_clone = null;
-    private $limit = 10;    
-    
+            
     private $records = 0;
-    private static $num_records = 0;
-    private static $total_records = 0;
     
-    private static $container = array('tag'=>'ul', 'class'=>'');
-    private static $list = array('tag'=>'li', 'class'=>'', 'classActive'=>'active', 'classDisabled'=>'disabled');
+    private $total_records = 0;
     
     private $args = [];
+    
+    public static $container = ['tag'=>'ul', 'class'=>''];
+    public static $list = ['tag'=>'li', 'class'=>'', 'classActive'=>'active', 'classDisabled'=>'disabled'];
+    private static $num_records = 0;    
     private static $request_args = [];
     
-    function __construct(Query $query, $args = []) {
-               
-        $this->setArgs($args);
+    function __construct(Query $query) {
         
         $this->query = $query;        
         $this->query_clone = clone $this->query;
@@ -52,10 +54,6 @@ class Pagination {
         return $this->limit;
     }
 
-    function getArgs() {
-        return $this->args;
-    }
-
     function setPage($page) {
         $this->args['page'] = $this->page = $page;
         return $this;
@@ -76,16 +74,57 @@ class Pagination {
         return $this;
     }
 
-    function setArgs($args) {
+    function setArgs($args = []) {
+              
+        $args = array_merge(self::getRequest_args(), $args);
         
-        $this->setPage(isset($args['page'])?$args['page']:1);
-        $this->setLimit(isset($args['limit'])?$args['limit']:$this->limit);
-        $this->setDirection(isset($args['direction'])?$args['direction']:$this->direction);
-        $this->setOrderBy(isset($args['order'])?$args['order']:null);
+        if(isset($args['page'])){
+            $this->setPage($args['page']);
+        }
+        
+        if(isset($args['limit'])){
+            $this->setLimit($args['limit']);
+        }
+        
+        if(isset($args['order'])){
+            $this->setOrderBy($args['order']);
+        }
+        
+        if(isset($args['diraction'])){
+            $this->setDirection($args['diraction']);
+        }
         
         return $this;
     }
+    
+    private function __setArgs(){
         
+        $args = array_merge(['page'=>1, 'limit'=>10], self::getRequest_args());
+        
+        if(is_null($this->page) && isset($args['page'])){
+            $this->setPage($args['page']);
+        }
+        
+        if(is_null($this->limit) && isset($args['limit'])){
+            $this->setLimit($args['limit']);
+        }
+        
+        if(is_null($this->direction) && isset($args['direction'])){
+            $this->setDirection($args['direction']);
+        }
+        
+        if(is_null($this->orderBy) && isset($args['order'])){
+            $this->setOrderBy($args['order']);
+        }
+        
+        self::$request_args = [ 'page'=>$this->getPage(),
+                                'limit'=>$this->getLimit(),
+                                'order'=>$this->getOrderBy(),
+                                'direction'=>$this->getDirection()];
+        
+        return $this;
+    }
+
     private static function __getInflactor(){
         return Inflector::get('pt');
     }
@@ -108,15 +147,17 @@ class Pagination {
 
     public function get() {
         
-        $records = $this->query
+        $records = $this
+                        ->__setArgs()
+                        ->query
                         ->orderBy($this->orderBy, $this->direction)
                         ->limit($this->limit)
                         ->offset(($this->page - 1) * $this->limit)
                         ->get();
         //pr($this);
-        self::$num_records = $this->records = $this->query->getNumRows();
-        self::$total_records = $this->total_records();
-        
+        self::$request_args['records'] = $this->records = $this->query->getNumRows();
+        self::$request_args['total_records'] = $this->total_records = $this->total_records();
+                
         $this->query->reset();        
         return $records;
     }
@@ -131,17 +172,16 @@ class Pagination {
         self::$request_args = $args;
     }
     
-//    public static function pages() {        
-//        $paging_options = array(
-//            'page'=> isset($this->['page'])?$request['args']['page']:1,
-//            'limit'=>isset($request['args']['limit'])?$request['args']['limit']:self::$limit,
-//            'records'=>self::$records,
-//            'total_records'=>self::$total_records,
-//        );
-//        
-//        return new Paging(self::$container, self::$list, $paging_options);
-//    }
-//    
+    static function getRequest_args() {
+        return self::$request_args;
+    }
+        
+    public static function pages() {
+        self::$request_args['container'] = self::$container;
+        self::$request_args['list'] = self::$list;
+        return new Paging(self::$request_args);
+    }
+    
     private static function __setDirection($field){
         $args = self::$request_args;
         
@@ -155,7 +195,7 @@ class Pagination {
     public static function order($field, $label = null) {        
         $text = ($label)?$label:self::__getInflactor()->camelize($field);
         $direction = self::__setDirection($field);
-        $rota = Route::url()->args(array('order'=>$field, 'direction'=>  $direction));
+        $rota = (new Route)->args(array('order'=>$field, 'direction'=>  $direction));
         return Html::a($text)->href($rota)->output();
     }
     

@@ -13,7 +13,7 @@ class Integration {
         if(isset(self::$dbConfigs[$config])){
             return self::$dbConfigs[$config];
         }
-        throw new Exception("Config não esiste");
+        throw new \Exception("Config não esiste");
     }
 
     static function getDbConfigs() {

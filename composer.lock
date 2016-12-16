@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "e6dc3fb735168e57e0f6f58331cccdf6",
-    "content-hash": "89c1fba31c829f4ac8629ef1665c86db",
+    "hash": "d6039784cbfc291c36ad76421f03d118",
+    "content-hash": "8465d03db8af20a849913e42f979a56b",
     "packages": [
         {
             "name": "icanboogie/inflector",
@@ -60,44 +60,217 @@
             "time": "2016-07-02 11:14:17"
         },
         {
-            "name": "lichtner/fluentpdo",
-            "version": "dev-master",
+            "name": "phacil/html",
+            "version": "dev-development",
             "source": {
                 "type": "git",
-                "url": "https://github.com/envms/fluentpdo.git",
-                "reference": "c50768561a9470f8c840cdaf409bac9d5c5d054d"
+                "url": "https://github.com/phacil/html.git",
+                "reference": "cc4a2f41d181fd237b365ecac11a5957f9d1857e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/envms/fluentpdo/zipball/c50768561a9470f8c840cdaf409bac9d5c5d054d",
-                "reference": "c50768561a9470f8c840cdaf409bac9d5c5d054d",
+                "url": "https://api.github.com/repos/phacil/html/zipball/cc4a2f41d181fd237b365ecac11a5957f9d1857e",
+                "reference": "cc4a2f41d181fd237b365ecac11a5957f9d1857e",
                 "shasum": ""
+            },
+            "require": {
+                "icanboogie/inflector": "^1.4",
+                "php": ">=5.4"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "4.0.*"
             },
             "type": "library",
             "autoload": {
+                "psr-4": {
+                    "Phacil\\Component\\HTML\\": "src/"
+                }
+            },
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Alisson Nascimento",
+                    "email": "alisson.sa.nascimento@gmail.com"
+                }
+            ],
+            "description": "Phacil PHP Framework HTML Classes",
+            "keywords": [
+                "framework",
+                "html",
+                "phacil",
+                "php"
+            ],
+            "support": {
+                "source": "https://github.com/phacil/html/tree/development",
+                "issues": "https://github.com/phacil/html/issues"
+            },
+            "time": "2016-12-14 05:21:26"
+        },
+        {
+            "name": "phacil/http",
+            "version": "dev-development",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/phacil/http.git",
+                "reference": "6bbec2f25d45465db774bfc5404d4c4843ec8743"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/phacil/http/zipball/6bbec2f25d45465db774bfc5404d4c4843ec8743",
+                "reference": "6bbec2f25d45465db774bfc5404d4c4843ec8743",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.4",
+                "symfony/http-foundation": "^3.2"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "4.0.*"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Phacil\\Component\\HTTP\\": "src/"
+                },
                 "files": [
-                    "FluentPDO/FluentPDO.php"
+                    "src/functions.inc.php"
+                ]
+            },
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Alisson Nascimento",
+                    "email": "alisson.sa.nascimento@gmail.com"
+                }
+            ],
+            "description": "Phacil PHP Framework HTTP Classes",
+            "keywords": [
+                "framework",
+                "http",
+                "phacil",
+                "php"
+            ],
+            "support": {
+                "source": "https://github.com/phacil/http/tree/development",
+                "issues": "https://github.com/phacil/http/issues"
+            },
+            "time": "2016-12-15 03:52:11"
+        },
+        {
+            "name": "symfony/http-foundation",
+            "version": "v3.2.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/symfony/http-foundation.git",
+                "reference": "9963bc29d7f4398b137dd8efc480efe54fdbe5f1"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/symfony/http-foundation/zipball/9963bc29d7f4398b137dd8efc480efe54fdbe5f1",
+                "reference": "9963bc29d7f4398b137dd8efc480efe54fdbe5f1",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.5.9",
+                "symfony/polyfill-mbstring": "~1.1"
+            },
+            "require-dev": {
+                "symfony/expression-language": "~2.8|~3.0"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "3.2-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Symfony\\Component\\HttpFoundation\\": ""
+                },
+                "exclude-from-classmap": [
+                    "/Tests/"
                 ]
             },
             "notification-url": "https://packagist.org/downloads/",
             "license": [
-                "Apache-2.0",
-                "GPL-2.0+"
+                "MIT"
             ],
             "authors": [
                 {
-                    "name": "Marek Lichtner",
-                    "homepage": "http://licht.sk/"
+                    "name": "Fabien Potencier",
+                    "email": "fabien@symfony.com"
+                },
+                {
+                    "name": "Symfony Community",
+                    "homepage": "https://symfony.com/contributors"
                 }
             ],
-            "description": "FluentPDO is small PHP library for rapid query building. Killer feature is smart join builder which generates joins automatically.",
-            "homepage": "https://github.com/fpdo/fluentpdo",
-            "keywords": [
-                "database",
-                "dbal",
-                "pdo"
+            "description": "Symfony HttpFoundation Component",
+            "homepage": "https://symfony.com",
+            "time": "2016-11-27 04:21:38"
+        },
+        {
+            "name": "symfony/polyfill-mbstring",
+            "version": "v1.3.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/symfony/polyfill-mbstring.git",
+                "reference": "e79d363049d1c2128f133a2667e4f4190904f7f4"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/symfony/polyfill-mbstring/zipball/e79d363049d1c2128f133a2667e4f4190904f7f4",
+                "reference": "e79d363049d1c2128f133a2667e4f4190904f7f4",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.3"
+            },
+            "suggest": {
+                "ext-mbstring": "For best performance"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.3-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Symfony\\Polyfill\\Mbstring\\": ""
+                },
+                "files": [
+                    "bootstrap.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
             ],
-            "time": "2016-10-06 11:45:37"
+            "authors": [
+                {
+                    "name": "Nicolas Grekas",
+                    "email": "p@tchwork.com"
+                },
+                {
+                    "name": "Symfony Community",
+                    "homepage": "https://symfony.com/contributors"
+                }
+            ],
+            "description": "Symfony polyfill for the Mbstring extension",
+            "homepage": "https://symfony.com",
+            "keywords": [
+                "compatibility",
+                "mbstring",
+                "polyfill",
+                "portable",
+                "shim"
+            ],
+            "time": "2016-11-14 01:06:16"
         }
     ],
     "packages-dev": [
@@ -676,7 +849,7 @@
         },
         {
             "name": "symfony/yaml",
-            "version": "v2.8.14",
+            "version": "v2.8.15",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/yaml.git",
@@ -727,7 +900,8 @@
     "aliases": [],
     "minimum-stability": "stable",
     "stability-flags": {
-        "lichtner/fluentpdo": 20
+        "phacil/http": 20,
+        "phacil/html": 20
     },
     "prefer-stable": false,
     "prefer-lowest": false,
