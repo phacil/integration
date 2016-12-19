@@ -6,7 +6,7 @@
  * and open the template in the editor.
  */
 
-namespace Phacil\Component\Integration\ORM;
+namespace Phacil\Integration\ORM;
 
 /**
  * Description of TableTrait

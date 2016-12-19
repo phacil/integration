@@ -6,9 +6,9 @@
  * and open the template in the editor.
  */
 
-namespace Phacil\Component\Integration\ORM;
+namespace Phacil\Integration\ORM;
 
-use Phacil\Component\Integration\Integration;
+use Phacil\Integration\Integration;
 
 /**
  * Description of Model
@@ -20,9 +20,9 @@ class Model {
     use TableTrait;
     
     private $associations;
-    private $table_name;
+    public  $table_name;
     private $table_alias;
-    private $primary_key;
+    public  $primary_key;
     private $hooks;
     private $prepareAssociation;
 
@@ -72,11 +72,15 @@ class Model {
         return $this->table_name() . ($this->table_alias() ? ' ' . $this->table_alias() : '');
     }
     
-    public function find($options = [])
+    public function find($id = null)
     {
         $table = $this->table_name();
         
         $query = ORMQuery::$table();
+        
+        if($id){
+            $query->where([$table . '.' . $this->primary_key()=>$id]);
+        }
                 
         foreach($this->associations as $assoc){
             
@@ -84,7 +88,7 @@ class Model {
                 
                 $_table_name = $this->assoc_table_name(ORMQuery::$baseNamespace, $assoc);
                 
-                $query->join(   $_table_name, 
+                $query->leftJoin(   $_table_name, 
                                 $_table_name . '.' . $this->primary_key(),
                                 $this->table_name() . '.'. $assoc['options']['foreign_key']
                             );
@@ -153,7 +157,31 @@ class Model {
         }
         return null;
     }
-/* da qui pra cima funcionando */
+    
+    public function insert(Array $data)
+    {
+        //call before_create and before_save
+        //$data = $this->run_hook('before_save', null, $data);
+
+        $table = $this->table_name();
+        
+        $query = ORMQuery::$table();
+        
+        $insertId = $query->insert($data);
+                
+        $obj = $this->find()
+                    ->where([$this->table_name().'.'.$this->primary_key()=>$insertId])
+                    ->get(1);
+
+        //call after_create and after_save
+        //$obj = $this->run_hook('after_create', $obj);
+        //$obj = $this->run_hook('after_save', $obj, $data);
+
+        return $obj;
+    }
+    
+/* da qui pra cima funcionando */    
+    
     /*! Hooks */
     function before_save($name)
     {
@@ -182,55 +210,6 @@ class Model {
             }
             return in_array($hook, array('after_save', 'after_create', 'after_update')) ? $row : $data;
     }
-
-    /*! CRUD Functions */
-    public function create($data)
-    {
-            //call before_create and before_save
-            //$data = $this->run_hook('before_create', $data);
-            $data = $this->run_hook('before_save', null, $data);
-
-            $clean_data = [];
-
-            foreach ($data as $key => $value)
-            {
-                    if (get_class($value) == 'Row')
-                    {
-                            $primary_key = $value->model->primary_key();
-                            $id = $value->$primary_key;
-
-                            $clean_data[$primary_key] = $id;
-                    }
-                    else
-                    {
-                            $clean_data[$key] = $value;
-                    }
-            }
-            $data = $clean_data;
-
-            $db = Integration::Instance();
-            $db->create($this->table_name(), $data);
-            $id = $db->db->insert_id;
-
-            $obj = $this->find($id);
-
-            //call after_create and after_save
-            //$obj = $this->run_hook('after_create', $obj);
-            $obj = $this->run_hook('after_save', $obj, $data);
-
-            return $obj;
-    }
-    public function update($id, $data)
-    {
-            $row = $this->find($id);
-            $row->update($data);
-    }
-    public function destroy($id)
-    {
-            $row = $this->find($id);
-            $row->destory();
-    }
-    
 
     public function first($options = [])
     {

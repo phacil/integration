@@ -6,7 +6,7 @@
  * and open the template in the editor.
  */
 
-namespace Phacil\Component\Integration\Database;
+namespace Phacil\Integration\Database;
 
 /**
  * Description of Row
@@ -36,13 +36,13 @@ class Row {
 */	
     private function data($data, $model = null)
     {
-        
+        //pr($data); exit;
         foreach ($data as $key => $value)
         {
             if(strpos($key, '.') !== false){                
                 list($table, $field) = explode('.', $key);
                 
-                if($model == $table){
+                if($model == $table || $table == ''){
                     $this->$field = $value;
                 }else{
                     if(!isset($this->$table)){

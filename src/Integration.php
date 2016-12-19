@@ -1,6 +1,6 @@
 <?php
 
-namespace Phacil\Component\Integration;
+namespace Phacil\Integration;
 
 use \PDO as PDO;
 

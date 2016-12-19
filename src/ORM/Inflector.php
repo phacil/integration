@@ -32,7 +32,7 @@
 * @version $Revision 0.1 $
 */
 
-namespace Phacil\Component\Integration\ORM;
+namespace Phacil\Integration\ORM;
 
 class Inflector
 {

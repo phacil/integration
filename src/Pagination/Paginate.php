@@ -1,11 +1,11 @@
 <?php
 
-namespace Phacil\Component\Integration\Pagination;
+namespace Phacil\Integration\Pagination;
 
-use Phacil\Component\Integration\Database\Query;
-use Phacil\Component\HTML\HTML as Html;
-use Phacil\Component\HTTP\Request;
-use Phacil\Component\Integration\Pagination\RouteBuilder as Route;
+use Phacil\Integration\Database\Query;
+use Phacil\HTML\HTML as Html;
+use Phacil\HTTP\Request;
+use Phacil\Integration\Pagination\RouteBuilder as Route;
 
 use ICanBoogie\Inflector;
 
@@ -34,6 +34,8 @@ class Paginate {
         
         $this->query = $query;        
         $this->query_clone = clone $this->query;
+        $this->setArgs(Request::info('args'));
+        self::$request_args = Request::info('args');
         
         return $this;
     }
@@ -87,7 +89,11 @@ class Paginate {
         }
         
         if(isset($args['order'])){
-            $this->setOrderBy($args['order']);
+            if(isset($this->query->model) && !(strpos($args['order'], '.'))){
+                $this->setOrderBy($this->query->model.'.'.$args['order']);
+            }else{
+                $this->setOrderBy($args['order']);
+            }
         }
         
         if(isset($args['diraction'])){
@@ -154,7 +160,7 @@ class Paginate {
                         ->limit($this->limit)
                         ->offset(($this->page - 1) * $this->limit)
                         ->get();
-        //pr($this);
+
         self::$request_args['records'] = $this->records = $this->query->getNumRows();
         self::$request_args['total_records'] = $this->total_records = $this->total_records();
                 

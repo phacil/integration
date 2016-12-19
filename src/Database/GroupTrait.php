@@ -6,7 +6,7 @@
  * and open the template in the editor.
  */
 
-namespace Phacil\Component\Integration\Database;
+namespace Phacil\Integration\Database;
 
 /**
  * Description of GroupTrait

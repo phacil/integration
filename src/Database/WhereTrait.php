@@ -1,6 +1,6 @@
 <?php
 
-namespace Phacil\Component\Integration\Database;
+namespace Phacil\Integration\Database;
 
 trait WhereTrait {
     

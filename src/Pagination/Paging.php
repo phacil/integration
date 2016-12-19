@@ -1,9 +1,9 @@
 <?php
 
-namespace Phacil\Component\Integration\Pagination;
+namespace Phacil\Integration\Pagination;
 
-use Phacil\Component\HTML\HTML as Html;
-use Phacil\Component\Integration\Pagination\RouteBuilder as Route;
+use Phacil\HTML\HTML as Html;
+use Phacil\Integration\Pagination\RouteBuilder as Route;
 
 class Paging {
     
@@ -18,7 +18,7 @@ class Paging {
     private $total_records = null;
     private $total_pages = null;
     
-    private $base = '';
+    private $base = null;
     
     private $out = null;
     
@@ -85,7 +85,7 @@ class Paging {
         return str_replace(array_keys($vars), $vars, $textUnformated);
     }
     
-    public function setBase($base){
+    public function setBase($base = null){
         $this->base = $base;
         return $this;
     }

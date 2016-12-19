@@ -6,10 +6,10 @@
  * and open the template in the editor.
  */
 
-namespace Phacil\Component\Integration\ORM;
+namespace Phacil\Integration\ORM;
 
-use Phacil\Component\Integration\Database\Query;
-use Phacil\Component\Integration\Integration;
+use Phacil\Integration\Database\Query;
+use Phacil\Integration\Integration;
 
 /**
  * Description of ORMQuery
@@ -21,7 +21,7 @@ class ORMQuery extends Query implements \IteratorAggregate{
     
     use TableTrait;
     
-    private $model;
+    public $model;
     public $children = [];
     public static $baseNamespace = "\\";
     
@@ -35,13 +35,26 @@ class ORMQuery extends Query implements \IteratorAggregate{
         }
         return false;
     }
+    
+    public function getModel(){
+        return $this->model;
+    }
 
     public function getAll($array = false, $all = false, $reset = true){
         
         $query = $this->buildQuery();
+        
+        // before find
       
         $result = $this->query($query, $all, $array, $reset);
+        
+        // after find
+        
 	$collection = [];
+        
+        if(!is_array($result)){
+            return $this->injectRow($result);
+        }
                 
         foreach($result as $data){
             $_data = (array) $data;
@@ -73,6 +86,7 @@ class ORMQuery extends Query implements \IteratorAggregate{
                 }
                 $data->{$_table_name} = $query->get();
             }
+            //pr($data);exit;
            $collection[] = $this->injectRow($data);
         }
         return $collection;
@@ -94,6 +108,44 @@ class ORMQuery extends Query implements \IteratorAggregate{
                 return call_user_func_array(array($connection2,'where'), $arguments);
             }
         }
+    }
+    
+    /* CRUD */
+    
+    public function insert(Array $data) {
+        
+        //before insert
+        
+        $saved_data = parent::insert($data);
+        
+        //after insert
+        
+        return $saved_data;
+        
+    }
+    
+    public function update(Array $data) {
+        
+        //before update
+        
+        $saved_data = parent::update($data);
+        
+        //after update
+        
+        return $saved_data;
+        
+    }
+    
+    public function delete() {
+        
+        //before delete
+        
+        $deleted_data = parent::delete();
+        
+        //after delete
+        
+        return $deleted_data;
+        
     }
     
 }

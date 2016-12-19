@@ -6,9 +6,9 @@
  * and open the template in the editor.
  */
 
-namespace Phacil\Component\Integration\ORM;
+namespace Phacil\Integration\ORM;
 
-use Phacil\Component\Integration\Database\Row;
+use Phacil\Integration\Database\Row;
 
 /**
  * Description of ORMRow

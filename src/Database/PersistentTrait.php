@@ -6,7 +6,7 @@
  * and open the template in the editor.
  */
 
-namespace Phacil\Component\Integration\Database;
+namespace Phacil\Integration\Database;
 
 /**
  * Description of PersistentTrait
@@ -21,7 +21,7 @@ trait PersistentTrait {
         return $this->insertId;
     }
 
-    public function insert($data){
+    public function insert(Array $data){
         $columns = array_keys($data);
         $column = implode(',', $columns);
         $val = implode(', ', array_map([$this, 'escape'], $data));
@@ -37,7 +37,7 @@ trait PersistentTrait {
         return false;                
     }
 
-    public function update($data){
+    public function update(Array $data){
         $query = 'UPDATE ' . $this->from . ' SET ';
         $values = [];
 

@@ -1,21 +1,22 @@
 <?php
 
-namespace Phacil\Component\Integration\Pagination;
+namespace Phacil\Integration\Pagination;
 
-use Phacil\Component\HTTP\Request;
+use Phacil\HTTP\Request;
 
 class RouteBuilder {
     
     private $url = [];
     private $request = [];
-    private $base = '';
+    private $base = null;
 
     public function __construct($url = '/') {
         $this->request = Request::info();
-        //pr(Request::info()); exit;
-        $this->url['url'] = $url;
-        $this->base = (defined('ROOT_URL'))?ROOT_URL:'';
+        //pr($this->request); exit;
+        $this->url['url'] = $url;        
+        //pr($this->base);exit;
         return $this;
+        
     }
        
     private function initRequestInfo($parts = array()) {
@@ -61,7 +62,7 @@ class RouteBuilder {
         return $this;
     }
     
-    public function setBase($base){
+    public function setBase($base = null){
         $this->base = $base;
         return $this;
     }
@@ -92,6 +93,9 @@ class RouteBuilder {
                 }
             }
         }
+        
+        //pr($this->base . join('/', $out));exit;
+        $this->base = (defined('ROOT_URL'))?ROOT_URL:null;
        
         return $this->base . join('/', $out);
     } 

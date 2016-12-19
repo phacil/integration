@@ -1,6 +1,6 @@
 <?php
 
-namespace Phacil\Component\Integration\ORM;
+namespace Phacil\Integration\ORM;
 
 class Helpers{
     static function value_for_key($keys, $array, $default = false)

@@ -10,9 +10,9 @@
 *
 */
 
-namespace Phacil\Component\Integration\Database;
+namespace Phacil\Integration\Database;
 
-use Phacil\Component\Integration\Integration;
+use Phacil\Integration\Integration;
 use \IteratorAggregate;
 use \ArrayIterator;
 use \PDO as PDO;
@@ -241,7 +241,6 @@ class Query implements IteratorAggregate
       
         $result = $this->query($query, $all, $array, $reset);
         
-        //print_r($result);
         if(!is_array($result)){
             $collection = $this->injectRow($result);
         }else{
@@ -270,13 +269,14 @@ class Query implements IteratorAggregate
         $list = array();
         if(is_array($value)){
             
-        }else if(!empty ($value)){
-            foreach ($result as $k => $v) {
-                $list[$v->$key] = $v->$value;
-            }
         }else{
-            foreach ($result as $k => $v) {
-                $list[$v[$key]] = $v[$key];
+            
+            $value = (!empty ($value))?$value:$key;
+            
+            foreach ($result as $k => $row) { 
+                foreach ($row as $model => $v) { 
+                    $list[$v->$key] = $v->$value;
+                }
             }
         }
         return $list;
