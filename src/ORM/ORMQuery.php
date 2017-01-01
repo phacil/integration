@@ -1,11 +1,5 @@
 <?php
 
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
 namespace Phacil\Integration\ORM;
 
 use Phacil\Integration\Database\Query;
@@ -24,7 +18,7 @@ class ORMQuery extends Query implements \IteratorAggregate{
     public $model;
     public $children = [];
     public static $baseNamespace = "\\";
-    
+            
     protected function injectRow($data){        
         return new ORMRow($data, $this->model);
     }
@@ -44,12 +38,8 @@ class ORMQuery extends Query implements \IteratorAggregate{
         
         $query = $this->buildQuery();
         
-        // before find
-      
-        $result = $this->query($query, $all, $array, $reset);
-        
-        // after find
-        
+        $result = $this->query($this->beforeFind($query), $all, $array, $reset);
+                
 	$collection = [];
         
         if(!is_array($result)){
@@ -89,48 +79,67 @@ class ORMQuery extends Query implements \IteratorAggregate{
             //pr($data);exit;
            $collection[] = $this->injectRow($data);
         }
-        return $collection;
+        
+        return $this->afterFind($collection);        
     }
          
     public static function __callStatic($name, $arguments) {
         
-        $pdo = Integration::getConfig(Integration::getActualConfig());
+        $pdo = Integration::exec(Integration::getActualConfig());
         $connection = new self($pdo);
                
         if(method_exists($connection, $name)){
-            return call_user_func_array(array($connection, $name), $arguments);
+            $query =  call_user_func_array(array($connection, $name), $arguments);
         }else{
             $connection->model = $name;
-            $connection2 = call_user_func_array(array($connection,'from'), (array) $name);
-            if(empty($arguments)){
-                return $connection2;
-            }else{
-                return call_user_func_array(array($connection2,'where'), $arguments);
+            $query = call_user_func_array(array($connection,'from'), (array) $name);
+            if(!empty($arguments)){
+                $query = call_user_func_array(array($query,'where'), $arguments);
             }
+            
         }
+                
+        return $query;
     }
     
-    /* CRUD */
+    /* CRUD */    
     
-    public function insert(Array $data) {
+    public function setHooks($hooks){
+        $this->hooks = $hooks;
+        return $this;
+    }
+    
+/*    public function insert(Array $data) {
         
-        //before insert
+        //before update
+        if(isset($this->hooks->before_insert)){
+            $data = call_user_func($this->hooks->before_insert, $data);
+        }
         
         $saved_data = parent::insert($data);
         
         //after insert
+        if(isset($this->hooks->before_insert)){
+            $saved_data = call_user_func($this->hooks->before_insert, $saved_data);
+        }
         
         return $saved_data;
         
     }
     
+    
     public function update(Array $data) {
         
         //before update
+        if(isset($this->hooks->before_update)){
+            $data = call_user_func($this->hooks->before_update, $data);
+        }
         
         $saved_data = parent::update($data);
         
-        //after update
+        if(isset($this->hooks->after_update)){
+            $saved_data = call_user_func($this->hooks->after_update, $saved_data);
+        }
         
         return $saved_data;
         
@@ -138,14 +147,21 @@ class ORMQuery extends Query implements \IteratorAggregate{
     
     public function delete() {
         
-        //before delete
+        if(isset($this->hooks->before_delete)){
+            call_user_func($this->hooks->before_delete);
+        }
         
         $deleted_data = parent::delete();
         
-        //after delete
+        if(isset($this->hooks->after_delete)){
+            $deleted_data = call_user_func($this->hooks->after_delete, $deleted_data);
+        }
         
         return $deleted_data;
         
     }
     
+ * 
+ * */
+
 }

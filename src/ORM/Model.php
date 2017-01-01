@@ -1,20 +1,7 @@
 <?php
 
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
 namespace Phacil\Integration\ORM;
 
-use Phacil\Integration\Integration;
-
-/**
- * Description of Model
- *
- * @author alisson
- */
 class Model {
     
     use TableTrait;
@@ -26,12 +13,12 @@ class Model {
     private $hooks;
     private $prepareAssociation;
 
-    function __construct()
+    public function __construct()
     {
-
+        $this->hooks = new \stdClass();
     }
-
-    function primary_key($primary_key = null)
+    
+    public function primary_key($primary_key = null)
     {
         if (empty($this->primary_key) || $primary_key)
         {
@@ -41,7 +28,7 @@ class Model {
         return $this->primary_key;
     }
 
-    function table_name($table_name = null)
+    public function table_name($table_name = null)
     {
         if (empty($this->table_name) || $table_name)
         {
@@ -53,7 +40,7 @@ class Model {
         return $this->table_name;
     }
 
-    function table_alias($table_alias = null)
+    public function table_alias($table_alias = null)
     {
         if ($table_alias)
         {
@@ -63,7 +50,7 @@ class Model {
         return $this->table_alias;
     }
 
-    function get($justAlias = false)
+    public function get($justAlias = false)
     {
         if ($justAlias)
         {
@@ -72,47 +59,20 @@ class Model {
         return $this->table_name() . ($this->table_alias() ? ' ' . $this->table_alias() : '');
     }
     
-    public function find($id = null)
-    {
-        $table = $this->table_name();
-        
-        $query = ORMQuery::$table();
-        
-        if($id){
-            $query->where([$table . '.' . $this->primary_key()=>$id]);
-        }
-                
-        foreach($this->associations as $assoc){
-            
-            if($assoc['type'] == 'belongs_to'){
-                
-                $_table_name = $this->assoc_table_name(ORMQuery::$baseNamespace, $assoc);
-                
-                $query->leftJoin(   $_table_name, 
-                                $_table_name . '.' . $this->primary_key(),
-                                $this->table_name() . '.'. $assoc['options']['foreign_key']
-                            );
-            }else if($assoc['type'] == 'has_many'){
-                $query->children[] = $assoc;
-            }
-        }
-        
-        return $query;
-    }
 
     /*! Associations */
-    function getAssociations()
+    public function getAssociations()
     {
         return $this->associations;
     }
 
-    function cleanAssociations()
+    public function cleanAssociations()
     {
         $this->associations = [];
         return $this;
     }
     
-    function table($name, $options = null)
+    public function table($name, $options = null)
     {
         $this->associations[] = array(
             'name' => $name,
@@ -123,7 +83,7 @@ class Model {
         return $this;
     }
     
-    function model($name, $options = null)
+    public function model($name, $options = null)
     {
         $this->associations[] = array(
             'name' => $name,
@@ -134,19 +94,19 @@ class Model {
         return $this;
     }
     
-    function belongs_to()
+    public function belongs_to()
     {
         $this->prepareAssociation = 'belongs_to';
         return $this;
     }
 
-    function has_many()
+    public function has_many()
     {
         $this->prepareAssociation = 'has_many';
         return $this;
     }
 
-    function association($name)
+    public function association($name)
     {
         foreach ($this->associations() as $association)
         {
@@ -158,102 +118,48 @@ class Model {
         return null;
     }
     
+    public function getInstanceQuery()
+    {
+        $table = $this->table_name();        
+        return ORMQuery::$table()->setHooks($this->hooks);        
+    }
+    
+    public function find($id = null)
+    {       
+        $query = $this->getInstanceQuery();
+        
+        if($id){
+            $query->where([$table . '.' . $this->primary_key()=>$id]);
+        }
+                
+        foreach($this->associations as $assoc){
+            
+            if($assoc['type'] == 'belongs_to'){
+                
+                $_table_name = $this->assoc_table_name(ORMQuery::$baseNamespace, $assoc);
+                
+                $query->leftJoin($_table_name, 
+                                $_table_name . '.' . $this->primary_key(),
+                                $this->table_name() . '.'. $assoc['options']['foreign_key']
+                            );
+            }else if($assoc['type'] == 'has_many'){
+                $query->children[] = $assoc;
+            }
+        }
+        
+        return $query;
+    }
+    
     public function insert(Array $data)
     {
         //call before_create and before_save
-        //$data = $this->run_hook('before_save', null, $data);
-
-        $table = $this->table_name();
+        $query = $this->getInstanceQuery();
         
-        $query = ORMQuery::$table();
-        
-        $insertId = $query->insert($data);
-                
-        $obj = $this->find()
-                    ->where([$this->table_name().'.'.$this->primary_key()=>$insertId])
-                    ->get(1);
-
-        //call after_create and after_save
-        //$obj = $this->run_hook('after_create', $obj);
-        //$obj = $this->run_hook('after_save', $obj, $data);
-
-        return $obj;
+        return $query->insert($data);        
     }
     
-/* da qui pra cima funcionando */    
-    
-    /*! Hooks */
-    function before_save($name)
-    {
-            $this->hooks['before_save'][] = $name;
+    /*! Hooks */        
+    public function hooks(){
+        return $this->hooks;
     }
-    function after_save($name)
-    {
-            $this->hooks['after_save'][] = $name;
-    }
-    function before_update($name)
-    {
-            $this->hooks['before_update'][] = $name;
-    }
-    function after_update($name)
-    {
-            $this->hooks['after_update'][] = $name;
-    }
-    function run_hook($hook, $row = null, $data = null)
-    {
-            if (!empty($this->hooks[$hook]))
-            {
-                    foreach ($this->hooks[$hook] as $h)
-                    {
-                            $data = $this->$h($row, $data);
-                    }
-            }
-            return in_array($hook, array('after_save', 'after_create', 'after_update')) ? $row : $data;
-    }
-
-    public function first($options = [])
-    {
-            $options = array_merge(array(
-                    'limit' => 1,
-                    'order' => $this->primary_key().' ASC'
-            ), $options);
-
-            $results = $this->find($options);
-            if (count($results))
-            {
-                    return $results[0];
-            }
-            return null;
-    }
-    public function earliest() { return $this->last(); }
-
-    public function last($options = [])
-    {
-            $options = array_merge(array(
-                    'limit' => 1,
-                    'order' => $this->primary_key() . ' DESC'
-            ), $options);
-
-            $results = $this->find($options);
-            if (count($results))
-            {
-                    return $results[0];
-            }
-            return null;
-    }
-    public function latest() { return $this->last(); }
-
-    public function count($options = [])
-    {
-            $options['select'] = 'COUNT(' . $this->get(true) . '.' . $this->primary_key() . ') AS count';
-            $results = $this->find($options);
-            $row = $results[0];
-            $count = $row->count;
-            return $count;
-    }
-
-    /*function __call($method, $arguments)
-    {
-
-    }*/
 }
