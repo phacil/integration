@@ -63,7 +63,7 @@ trait HooksTrait {
     public function afterInsert($inserted_id)
     {
         if(isset($this->hooks->after_insert)){
-            $inserted_data = call_user_func($this->hooks->after_insert, $inserted_id);
+            $inserted_id = call_user_func($this->hooks->after_insert, $inserted_id);
         }
         return $inserted_id;
     }
@@ -79,7 +79,7 @@ trait HooksTrait {
     public function afterUpdate($updated_id)
     {
         if(isset($this->hooks->after_update)){
-            $updated_data = call_user_func($this->hooks->after_update, $updated_id);
+            $updated_id = call_user_func($this->hooks->after_update, $updated_id);
         }
         return $updated_id;
     }
