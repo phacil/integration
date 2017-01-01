@@ -26,7 +26,8 @@ class Query implements IteratorAggregate
         OrderTrait, 
         LimitTrait,
         PersistentTrait,
-        PDOUtilsTrait;
+        UtilsTrait,
+        HooksTrait;
     
     public $pdo 	= null;
 
@@ -145,10 +146,10 @@ class Query implements IteratorAggregate
         return $this->result;
     }
 
-    public function cache($time) {
-        $this->cache = new QueryBuilderCache($this->cacheDir, $time);
-        return $this;
-    }
+//    public function cache($time) {
+//        $this->cache = new QueryBuilderCache($this->cacheDir, $time);
+//        return $this;
+//    }
 
     public function queryCount(){
         return $this->queryCount;
@@ -162,33 +163,13 @@ class Query implements IteratorAggregate
         
         $query = 'SELECT ' . $this->select . ' FROM ' . $this->from;
         
-        if (!is_null($this->join)){
-            $query .= $this->join;
-        }
-
-        if (!is_null($this->where)){
-            $query .= ' WHERE ' . $this->where;
-        }
-
-        if (!is_null($this->groupBy)){
-            $query .= ' GROUP BY ' . $this->groupBy;
-        }
-
-        if (!is_null($this->having)){
-            $query .= ' HAVING ' . $this->having;
-        }
-
-        if (!is_null($this->orderBy)){
-            $query .= ' ORDER BY ' . $this->orderBy;
-        }
-
-        if (!is_null($this->limit)){
-            $query .= ' LIMIT ' . $this->limit;
-        }
-        
-        if (!is_null($this->offset)){
-            $query .= ' OFFSET ' . $this->offset;
-        }
+        $query .= $this->isNotNullReturn($this->join);
+        $query .= $this->isNotNullReturn($this->where, ' WHERE ');
+        $query .= $this->isNotNullReturn($this->groupBy, ' GROUP BY ');
+        $query .= $this->isNotNullReturn($this->having , ' HAVING ');
+        $query .= $this->isNotNullReturn($this->orderBy, ' ORDER BY ');
+        $query .= $this->isNotNullReturn($this->limit, ' LIMIT ');
+        $query .= $this->isNotNullReturn($this->offset, ' OFFSET ');
         
         return $query;
     }
@@ -238,8 +219,8 @@ class Query implements IteratorAggregate
     protected function getAll($array = false, $all = false, $reset = true){
         
         $query = $this->buildQuery();
-      
-        $result = $this->query($query, $all, $array, $reset);
+        
+        $result = $this->query($this->beforeSelect($query), $all, $array, $reset);
         
         if(!is_array($result)){
             $collection = $this->injectRow($result);
@@ -250,7 +231,7 @@ class Query implements IteratorAggregate
             }
         }       
         
-        return $collection;
+        return $this->afterSelect($collection);
     }
     
     public function getIterator() {
@@ -290,7 +271,7 @@ class Query implements IteratorAggregate
         
     public static function __callStatic($name, $arguments) {
         
-        $pdo = Integration::getConfig(Integration::getActualConfig());
+        $pdo = Integration::exec(Integration::getActualConfig());
         $connection = new self($pdo);
 
         if(method_exists($connection, $name)){

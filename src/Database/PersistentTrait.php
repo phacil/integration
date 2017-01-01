@@ -1,27 +1,17 @@
 <?php
 
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
 namespace Phacil\Integration\Database;
 
-/**
- * Description of PersistentTrait
- *
- * @author alisson
- */
 trait PersistentTrait {
-    
-    //use PDOUtilsTrait;
-    
+        
     public function insertId(){
         return $this->insertId;
     }
 
-    public function insert(Array $data){
+    public function insert(Array $data = []){
+        
+        $data = $this->beforeInsert($data);
+        
         $columns = array_keys($data);
         $column = implode(',', $columns);
         $val = implode(', ', array_map([$this, 'escape'], $data));
@@ -31,13 +21,16 @@ trait PersistentTrait {
 
         if ($query){
             $this->insertId = $this->pdo->lastInsertId();
-            return $this->insertId();
+            return $this->afterInsert($this->insertId());
         }
         
-        return false;                
+        return false;
     }
 
     public function update(Array $data){
+        
+        $data = $this->beforeUpdate($data);
+        
         $query = 'UPDATE ' . $this->from . ' SET ';
         $values = [];
 
@@ -52,7 +45,16 @@ trait PersistentTrait {
         if (!is_null($this->orderBy)) {$query .= ' ORDER BY ' . $this->orderBy;}
 
         if (!is_null($this->limit)) {$query .= ' LIMIT ' . $this->limit;}
+        
+        $query = $this->query($query);
 
+        if ($query){
+            $this->insertId = $this->pdo->lastInsertId();
+            if(isset($this->where['id'])){
+                return $this->afterUpdate($this->where['id']);
+            }            
+        }
+        
         return $this->query($query);
     }
 
