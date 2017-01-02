@@ -1,18 +1,7 @@
 <?php
 
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
 namespace Phacil\Integration\Database;
 
-/**
- * Description of SelectTrait
- *
- * @author alisson
- */
 trait SelectTrait {
     public function select($select='*') {
         if(is_array($select)){
@@ -27,13 +16,15 @@ trait SelectTrait {
         
         if(is_array($from)){
             $f = '';
-            foreach($from as $key){
-                $f .= $this->prefix . $key . ', ';
+            foreach($from as $key => $value){
+                if(is_int($key)){
+                   $value = $key . ' as ' . $value;   
+                }
+                $f .= $this->prefix . $value . ', ';
             }
-
             $this->from = rtrim($f, ', ');
         }else{
-                $this->from = $this->prefix . $from;
+            $this->from = $this->prefix . $from;
         }
 
         return $this;

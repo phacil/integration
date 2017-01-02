@@ -4,7 +4,7 @@ namespace Phacil\Integration\ORM;
 
 class Model {
     
-    use TableTrait;
+    use AssociationTrait;
     
     private $associations;
     public  $table_name;
@@ -57,67 +57,8 @@ class Model {
             return $this->table_alias() ? $this->table_alias() : $this->table_name();
         }
         return $this->table_name() . ($this->table_alias() ? ' ' . $this->table_alias() : '');
-    }
-    
+    }    
 
-    /*! Associations */
-    public function getAssociations()
-    {
-        return $this->associations;
-    }
-
-    public function cleanAssociations()
-    {
-        $this->associations = [];
-        return $this;
-    }
-    
-    public function table($name, $options = null)
-    {
-        $this->associations[] = array(
-            'name' => $name,
-            'type' => $this->prepareAssociation,
-            'to'=>'table',
-            'options' => $options
-        );
-        return $this;
-    }
-    
-    public function model($name, $options = null)
-    {
-        $this->associations[] = array(
-            'name' => $name,
-            'type' => $this->prepareAssociation,
-            'to'=>'model',
-            'options' => $options
-        );
-        return $this;
-    }
-    
-    public function belongs_to()
-    {
-        $this->prepareAssociation = 'belongs_to';
-        return $this;
-    }
-
-    public function has_many()
-    {
-        $this->prepareAssociation = 'has_many';
-        return $this;
-    }
-
-    public function association($name)
-    {
-        foreach ($this->associations() as $association)
-        {
-            if ($association['name'] == $name)
-            {
-                return $association;
-            }
-        }
-        return null;
-    }
-    
     public function getInstanceQuery()
     {
         $table = $this->table_name();        
@@ -129,7 +70,7 @@ class Model {
         $query = $this->getInstanceQuery();
         
         if($id){
-            $query->where([$table . '.' . $this->primary_key()=>$id]);
+            $query->where([$this->table_name() . '.' . $this->primary_key()=>$id]);
         }
                 
         foreach($this->associations as $assoc){
@@ -137,9 +78,10 @@ class Model {
             if($assoc['type'] == 'belongs_to'){
                 
                 $_table_name = $this->assoc_table_name(ORMQuery::$baseNamespace, $assoc);
+                $_alias = $this->assoc_alias(ORMQuery::$baseNamespace, $assoc);
                 
                 $query->leftJoin($_table_name, 
-                                $_table_name . '.' . $this->primary_key(),
+                                $_alias . '.' . $this->primary_key(),
                                 $this->table_name() . '.'. $assoc['options']['foreign_key']
                             );
             }else if($assoc['type'] == 'has_many'){
@@ -158,8 +100,4 @@ class Model {
         return $query->insert($data);        
     }
     
-    /*! Hooks */        
-    public function hooks(){
-        return $this->hooks;
-    }
 }

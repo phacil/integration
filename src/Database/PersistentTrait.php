@@ -29,7 +29,7 @@ trait PersistentTrait {
 
     public function update(Array $data){
         
-        $data = $this->beforeUpdate($data);
+        //$data = $this->beforeUpdate($data);
         
         $query = 'UPDATE ' . $this->from . ' SET ';
         $values = [];
@@ -39,23 +39,27 @@ trait PersistentTrait {
         }
 
         $query .= (is_array($data) ? implode(',', $values) : $data);
+        
+        if(isset($this->where[$this->model.'.id'])){
+            $updated_id = $this->where[$this->model.'.id'];
+        }; 
 
         if (!is_null($this->where)) { $query .= ' WHERE ' . $this->where;}
 
         if (!is_null($this->orderBy)) {$query .= ' ORDER BY ' . $this->orderBy;}
 
-        if (!is_null($this->limit)) {$query .= ' LIMIT ' . $this->limit;}
-        
+        if (!is_null($this->limit)) {$query .= ' LIMIT ' . $this->limit;}        
+               
         $query = $this->query($query);
-
+        
         if ($query){
-            $this->insertId = $this->pdo->lastInsertId();
-            if(isset($this->where['id'])){
-                return $this->afterUpdate($this->where['id']);
-            }            
+            if(isset($updated_id)){
+                return $this->afterUpdate($updated_id);
+            }
+            return true;
         }
         
-        return $this->query($query);
+        return false;
     }
 
     public function delete(){

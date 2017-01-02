@@ -36,17 +36,20 @@ trait JoinTrait{
         return $this;
     }
     
-    public function innerJoin($table, $field1, $op = '', $field2 = ''){
+    public function innerJoin($table, $field1, $op = '', $field2 = '')
+    {
         $this->join($table, $field1, $op, $field2, 'INNER ');
         return $this;
     }
 
-    public function leftJoin($table, $field1, $op = '', $field2 = '') {
+    public function leftJoin($table, $field1, $op = '', $field2 = '') 
+    {
         $this->join($table, $field1, $op, $field2, 'LEFT ');
         return $this;
     }
 
-    public function rightJoin($table, $field1, $op = '', $field2 = ''){
+    public function rightJoin($table, $field1, $op = '', $field2 = '')
+    {
         $this->join($table, $field1, $op, $field2, 'RIGHT ');
         return $this;
     }

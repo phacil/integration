@@ -5,15 +5,9 @@ namespace Phacil\Integration\ORM;
 use Phacil\Integration\Database\Query;
 use Phacil\Integration\Integration;
 
-/**
- * Description of ORMQuery
- *
- * @author alisson
- */
-
-class ORMQuery extends Query implements \IteratorAggregate{
+class ORMQuery extends Query{
     
-    use TableTrait;
+    use AssociationTrait;
     
     public $model;
     public $children = [];
@@ -80,7 +74,7 @@ class ORMQuery extends Query implements \IteratorAggregate{
            $collection[] = $this->injectRow($data);
         }
         
-        return $this->afterFind($collection);        
+        return $this->afterFind($collection);
     }
          
     public static function __callStatic($name, $arguments) {
