@@ -30,6 +30,7 @@
     "autoload": {
         "psr-4": {
             "Phacil\\Integration\\": "src/"
-        }
+        },        
+        "files": ["src/helpers.inc.php"]
     }
 }

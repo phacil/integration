@@ -4,21 +4,21 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "d6039784cbfc291c36ad76421f03d118",
+    "hash": "dfe0e9799cc88fa9f992e776cea0ec45",
     "content-hash": "8465d03db8af20a849913e42f979a56b",
     "packages": [
         {
             "name": "icanboogie/inflector",
-            "version": "v1.4.1",
+            "version": "v1.4.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/ICanBoogie/Inflector.git",
-                "reference": "94ce86a4c4e229ebfb1a959e9094b385c0ff9a8e"
+                "reference": "d3a2c4930c67fa93dc782f67955b85d56369742c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/ICanBoogie/Inflector/zipball/94ce86a4c4e229ebfb1a959e9094b385c0ff9a8e",
-                "reference": "94ce86a4c4e229ebfb1a959e9094b385c0ff9a8e",
+                "url": "https://api.github.com/repos/ICanBoogie/Inflector/zipball/d3a2c4930c67fa93dc782f67955b85d56369742c",
+                "reference": "d3a2c4930c67fa93dc782f67955b85d56369742c",
                 "shasum": ""
             },
             "require": {
@@ -57,7 +57,7 @@
                 "singularize",
                 "underscore"
             ],
-            "time": "2016-07-02 11:14:17"
+            "time": "2016-12-15 09:15:25"
         },
         {
             "name": "phacil/html",
@@ -65,12 +65,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/phacil/html.git",
-                "reference": "cc4a2f41d181fd237b365ecac11a5957f9d1857e"
+                "reference": "91768a27acf67e02dc5dd8596c35e0a907ffa967"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phacil/html/zipball/cc4a2f41d181fd237b365ecac11a5957f9d1857e",
-                "reference": "cc4a2f41d181fd237b365ecac11a5957f9d1857e",
+                "url": "https://api.github.com/repos/phacil/html/zipball/91768a27acf67e02dc5dd8596c35e0a907ffa967",
+                "reference": "91768a27acf67e02dc5dd8596c35e0a907ffa967",
                 "shasum": ""
             },
             "require": {
@@ -83,7 +83,7 @@
             "type": "library",
             "autoload": {
                 "psr-4": {
-                    "Phacil\\Component\\HTML\\": "src/"
+                    "Phacil\\HTML\\": "src/"
                 }
             },
             "license": [
@@ -106,7 +106,7 @@
                 "source": "https://github.com/phacil/html/tree/development",
                 "issues": "https://github.com/phacil/html/issues"
             },
-            "time": "2016-12-14 05:21:26"
+            "time": "2016-12-19 22:32:08"
         },
         {
             "name": "phacil/http",
@@ -114,12 +114,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/phacil/http.git",
-                "reference": "6bbec2f25d45465db774bfc5404d4c4843ec8743"
+                "reference": "afc2afe33cc33fa60d4272538999a714e50c1ec1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phacil/http/zipball/6bbec2f25d45465db774bfc5404d4c4843ec8743",
-                "reference": "6bbec2f25d45465db774bfc5404d4c4843ec8743",
+                "url": "https://api.github.com/repos/phacil/http/zipball/afc2afe33cc33fa60d4272538999a714e50c1ec1",
+                "reference": "afc2afe33cc33fa60d4272538999a714e50c1ec1",
                 "shasum": ""
             },
             "require": {
@@ -132,10 +132,11 @@
             "type": "library",
             "autoload": {
                 "psr-4": {
-                    "Phacil\\Component\\HTTP\\": "src/"
+                    "Phacil\\HTTP\\": "src/"
                 },
                 "files": [
-                    "src/functions.inc.php"
+                    "src/functions.inc.php",
+                    "src/helpers.inc.php"
                 ]
             },
             "license": [
@@ -158,7 +159,7 @@
                 "source": "https://github.com/phacil/http/tree/development",
                 "issues": "https://github.com/phacil/http/issues"
             },
-            "time": "2016-12-15 03:52:11"
+            "time": "2017-01-03 19:48:29"
         },
         {
             "name": "symfony/http-foundation",

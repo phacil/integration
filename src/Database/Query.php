@@ -264,8 +264,18 @@ class Query implements IteratorAggregate
     }
 
     public function __call($name, $args) {
+        
         if($name == 'list'){
             return call_user_func_array(array($this, '_list'), $args);
+        }else{
+            $this->from($name);
+            
+            if(empty($args)){
+                return $this;
+            }else{
+                return $this->where($args);
+            }
+            
         }
     }
         
