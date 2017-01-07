@@ -30,74 +30,72 @@ class Paginate {
     private static $num_records = 0;    
     private static $request_args = [];
     
-    function __construct(Query $query) {
+    public function __construct() {        
         
-        $this->query = $query;        
-        $this->query_clone = clone $this->query;
         $this->setArgs(Request::info('args'));
         self::$request_args = Request::info('args');
         
         return $this;
     }
     
-    function getPage() {
+    public function getPage() {
         return $this->page;
     }
 
-    function getOrderBy() {
+    public function getOrderBy() {
         return $this->orderBy;
     }
 
-    function getDirection() {
+    public function getDirection() {
         return $this->direction;
     }
 
-    function getLimit() {
+    public function getLimit() {
         return $this->limit;
     }
 
-    function setPage($page) {
+    public function page($page) {
         $this->args['page'] = $this->page = $page;
         return $this;
     }
 
-    function setOrderBy($orderBy) {
+    public function orderBy($orderBy) {
         $this->args['order'] = $this->orderBy = $orderBy;
         return $this;
     }
 
-    function setDirection($direction) {
+    public function direction($direction) {
         $this->args['direction'] = $this->direction = $direction;
         return $this;
     }
 
-    function setLimit($limit) {
+    public function limit($limit) {
         $this->args['limit'] = $this->limit = $limit;
         return $this;
     }
 
-    function setArgs($args = []) {
+    public function setArgs($args = []) {
               
         $args = array_merge(self::getRequest_args(), $args);
         
         if(isset($args['page'])){
-            $this->setPage($args['page']);
+            $this->page($args['page']);
         }
         
         if(isset($args['limit'])){
-            $this->setLimit($args['limit']);
+            $this->limit($args['limit']);
         }
         
         if(isset($args['order'])){
             if(isset($this->query->model) && !(strpos($args['order'], '.'))){
-                $this->setOrderBy($this->query->model.'.'.$args['order']);
+                $this->orderBy($this->query->model.'.'.$args['order']);
             }else{
-                $this->setOrderBy($args['order']);
+                $this->orderBy($args['order']);
             }
         }
         
         if(isset($args['diraction'])){
-            $this->setDirection($args['diraction']);
+            $this->direction($args['diraction']);
         }
         
         return $this;
@@ -108,19 +106,19 @@ class Paginate {
         $args = array_merge(['page'=>1, 'limit'=>10], self::getRequest_args());
         
         if(is_null($this->page) && isset($args['page'])){
-            $this->setPage($args['page']);
+            $this->page($args['page']);
         }
         
         if(is_null($this->limit) && isset($args['limit'])){
-            $this->setLimit($args['limit']);
+            $this->limit($args['limit']);
         }
         
         if(is_null($this->direction) && isset($args['direction'])){
-            $this->setDirection($args['direction']);
+            $this->direction($args['direction']);
         }
         
         if(is_null($this->orderBy) && isset($args['order'])){
-            $this->setOrderBy($args['order']);
+            $this->orderBy($args['order']);
         }
         
         self::$request_args = [ 'page'=>$this->getPage(),
@@ -151,7 +149,10 @@ class Paginate {
         return self::$num_records;
     }
 
-    public function get() {
+    public function get(Query $query) {
+        
+        $this->query = $query;        
+        $this->query_clone = clone $this->query;
         
         $records = $this
                         ->__setArgs()
@@ -182,13 +183,13 @@ class Paginate {
         return self::$request_args;
     }
         
-    public static function pages() {
+    public static function paging() {
         self::$request_args['container'] = self::$container;
         self::$request_args['list'] = self::$list;
         return new Paging(self::$request_args);
     }
     
-    private static function __setDirection($field){
+    private static function __direction($field){
         $args = self::$request_args;
         
         if(isset($args['order']) && $args['order']==$field && $args['direction']=='ASC'){
@@ -198,9 +199,9 @@ class Paginate {
         return 'ASC';
     }
 
-    public static function order($field, $label = null) {        
+    public static function sort($field, $label = null) {        
         $text = ($label)?$label:self::__getInflactor()->camelize($field);
-        $direction = self::__setDirection($field);
+        $direction = self::__direction($field);
         $rota = (new Route)->args(array('order'=>$field, 'direction'=>  $direction));
         return Html::a($text)->href($rota)->output();
     }

@@ -1,13 +1,23 @@
 <?php
 
 use Phacil\Integration\Integration;
+use Phacil\Integration\Database\Query;
+use Phacil\Integration\Pagination\Paginate;
+
 /**
  * 
  * @return \Phacil\Integration\Database\Query
  */
-
-function query()
+function query($table)
 {
     $pdo = Integration::exec(Integration::getActualConfig());
-    return new \Phacil\Integration\Database\Query($pdo);
+    return (new Query($pdo))->from($table);
+}
+
+/**
+ * 
+ * @return \Phacil\Integration\Pagination\Paginate
+ */
+function paginate(){
+    return new Paginate();
 }

@@ -114,12 +114,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/phacil/http.git",
-                "reference": "afc2afe33cc33fa60d4272538999a714e50c1ec1"
+                "reference": "004f4f16695ceca3dfefceca0ce1c168d5c61387"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phacil/http/zipball/afc2afe33cc33fa60d4272538999a714e50c1ec1",
-                "reference": "afc2afe33cc33fa60d4272538999a714e50c1ec1",
+                "url": "https://api.github.com/repos/phacil/http/zipball/004f4f16695ceca3dfefceca0ce1c168d5c61387",
+                "reference": "004f4f16695ceca3dfefceca0ce1c168d5c61387",
                 "shasum": ""
             },
             "require": {
@@ -159,7 +159,7 @@
                 "source": "https://github.com/phacil/http/tree/development",
                 "issues": "https://github.com/phacil/http/issues"
             },
-            "time": "2017-01-03 19:48:29"
+            "time": "2017-01-04 19:26:42"
         },
         {
             "name": "symfony/http-foundation",
