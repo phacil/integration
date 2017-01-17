@@ -11,6 +11,8 @@ use ICanBoogie\Inflector;
 
 class Paginate {
     
+    use \Phacil\Integration\InstanceTrait;
+    
     private $page = null;
     private $limit = null;
     private $orderBy = null;
@@ -34,7 +36,7 @@ class Paginate {
         
         $this->setArgs(Request::info('args'));
         self::$request_args = Request::info('args');
-        
+        self::$instance = $this;
         return $this;
     }
     

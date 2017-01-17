@@ -19,5 +19,8 @@ function query($table)
  * @return \Phacil\Integration\Pagination\Paginate
  */
 function paginate(){
+     if(!is_null(Paginate::getInstance())){
+        return Paginate::getInstance();
+    }
     return new Paginate();
 }
