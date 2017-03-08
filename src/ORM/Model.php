@@ -12,10 +12,12 @@ class Model {
     public  $primary_key;
     private $hooks;
     private $prepareAssociation;
+    private $validate;
 
     public function __construct()
     {
         $this->hooks = new \stdClass();
+        $this->validate = new \stdClass();
     }
     
     public function primary_key($primary_key = null)
@@ -62,7 +64,7 @@ class Model {
     public function getInstanceQuery()
     {
         $table = $this->table_name();        
-        return ORMQuery::$table()->setHooks($this->hooks);        
+        return ORMQuery::$table()->setHooks($this->hooks)->setValidation($this->validate);
     }
     
     public function find($id = null)

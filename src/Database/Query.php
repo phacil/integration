@@ -60,6 +60,10 @@ class Query implements IteratorAggregate
         return $this->pdo;
     }
     
+    private function injectRow($data){
+        return new Row($data);
+    }
+    
     public function table($from) {
         return $this->from($from);
     }
@@ -159,6 +163,74 @@ class Query implements IteratorAggregate
         return $this->query;
     }
     
+    public function error(){
+        $msg = '<h1>Database Error</h1>';
+        $msg .= '<h4>Query: <em style="font-weight:normal;">"'.$this->query.'"</em></h4>';
+        $msg .= '<h4>Error: <em style="font-weight:normal;">'.$this->error.'</em></h4>';
+        die($msg);
+    }
+
+    public function get($limit = null, $offset = null, $reset = true){
+       
+        if($limit){
+            $this->limit($limit);
+        }
+        
+        if($offset){
+            $this->offset($offset);
+        }
+        
+        $all = ($limit == 1)?false:true;
+        
+        
+        return $this->getAll(false, $all, $reset);
+    }
+    
+    public function getIterator() {
+        return new ArrayIterator($this->getAll(false, true, true));
+    }
+
+    public function count(){
+        $result = $this->getAll(false, false);
+        return $this->numRows;
+    }
+    
+    public function _list($key, $value = null){
+        $this->select = null;
+        $this->select(($value)?array($key, $value):$key);
+        $result = $this->getAll(false, true, true);
+        $list = array();
+        if(is_array($value)){
+            
+        }else{
+            
+            $value = (!empty ($value))?$value:$key;
+            
+            foreach ($result as $k => $row) { 
+                foreach ($row as $model => $v) { 
+                    $list[$v->$key] = $v->$value;
+                }
+            }
+        }
+        return $list;
+    }
+
+    public function __call($name, $args) {
+        //pr($args);exit;
+        if($name == 'list'){
+            return call_user_func_array(array($this, '_list'), $args);
+        }else{
+            $this->from($name);
+            
+            if(empty($args)){
+                return $this;
+            }else{
+                return $this->where($args);
+            }
+            
+        }
+    }
+    
     protected function buildQuery(){
         
         $query = 'SELECT ' . $this->select . ' FROM ' . $this->from;
@@ -192,33 +264,10 @@ class Query implements IteratorAggregate
 
         return;
     }
-      
-    public function error(){
-        $msg = '<h1>Database Error</h1>';
-        $msg .= '<h4>Query: <em style="font-weight:normal;">"'.$this->query.'"</em></h4>';
-        $msg .= '<h4>Error: <em style="font-weight:normal;">'.$this->error.'</em></h4>';
-        die($msg);
-    }
-
-    public function get($limit = null, $offset = null, $reset = true){
-       
-        if($limit){
-            $this->limit($limit);
-        }
-        
-        if($offset){
-            $this->offset($offset);
-        }
-        
-        $all = ($limit == 1)?false:true;
-        
-        
-        return $this->getAll(false, $all, $reset);
-    }
 
     protected function getAll($array = false, $all = false, $reset = true){
         
-        $query = $this->buildQuery();
+        $query = $this->beforeSelect($this)->buildQuery();
         
         $result = $this->query($this->beforeSelect($query), $all, $array, $reset);
         
@@ -233,52 +282,7 @@ class Query implements IteratorAggregate
         
         return $this->afterSelect($collection);
     }
-    
-    public function getIterator() {
-        return new ArrayIterator($this->getAll(false, true, true));
-    }
-
-    public function count(){
-        $result = $this->getAll(false, false);
-        return $this->numRows;
-    }
-    
-    public function _list($key, $value = null){
-        $this->select = null;
-        $this->select(($value)?array($key, $value):$key);
-        $result = $this->getAll(false, true, true);
-        $list = array();
-        if(is_array($value)){
             
-        }else{
-            
-            $value = (!empty ($value))?$value:$key;
-            
-            foreach ($result as $k => $row) { 
-                foreach ($row as $model => $v) { 
-                    $list[$v->$key] = $v->$value;
-                }
-            }
-        }
-        return $list;
-    }
-
-    public function __call($name, $args) {
-        
-        if($name == 'list'){
-            return call_user_func_array(array($this, '_list'), $args);
-        }else{
-            $this->from($name);
-            
-            if(empty($args)){
-                return $this;
-            }else{
-                return $this->where($args);
-            }
-            
-        }
-    }
-        
     public static function __callStatic($name, $arguments) {
         
         $pdo = Integration::exec(Integration::getActualConfig());
@@ -296,19 +300,15 @@ class Query implements IteratorAggregate
         }
     }
  
-    private function injectRow($data){
-        return new Row($data);
-    }
-    
     public function getNumRows(){
         return $this->numRows;
     }
     
-    function __destruct(){
+    public function __destruct(){
         $this->pdo = null;
     }
     
-    function __toString() {
+    public function __toString() {
         return $this->buildQuery();
     }
 }

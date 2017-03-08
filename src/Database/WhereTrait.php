@@ -9,7 +9,7 @@ trait WhereTrait {
     public function where($where, $op = null, $val = null, $ao = 'AND'){
         if (is_array($where)){
             $_where = [];
-
+            
             foreach ($where as $column => $data) {
                 $_where[] = $column . '=' . $this->escape($data);
             }
@@ -25,7 +25,7 @@ trait WhereTrait {
 
                 foreach($x as $k => $v){
                     if(!empty($v)){
-                            $w .= $v . (isset($op[$k]) ? $this->escape($op[$k]) : '');
+                        $w .= $v . (isset($op[$k]) ? $this->escape($op[$k]) : '');
                     }
                 }
 

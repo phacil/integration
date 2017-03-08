@@ -2,15 +2,33 @@
 
 namespace Phacil\Integration\Database;
 
+use Phacil\Integration\ORM\Validator;
+
 trait PersistentTrait {
-        
-    public function insertId(){
+  
+    public function insertId()
+    {
         return $this->insertId;
     }
+    
+    private function doValidate($data, $rules)
+    {
+        $validation_result = Validator::validate($data, $rules);
+        if (!$validation_result->isSuccess()) {
+            $this->validate()->errors = $validation_result->getErrors();
+            return false;
+        }
+        $this->validate()->isSucces = true;
+        return true;
+    }        
 
-    public function insert(Array $data = []){
-        
+    public function insert(Array $data = [])
+    {        
         $data = $this->beforeInsert($data);
+       
+        if(!$this->doValidate($data, $this->validate)){
+            return false;
+        }
         
         $columns = array_keys($data);
         $column = implode(',', $columns);
@@ -27,9 +45,13 @@ trait PersistentTrait {
         return false;
     }
 
-    public function update(Array $data){
+    public function update(Array $data)
+    {
+        $data = $this->beforeUpdate($data);
         
-        //$data = $this->beforeUpdate($data);
+        if(!$this->doValidate($data, $this->validate)){
+            return false;
+        }
         
         $query = 'UPDATE ' . $this->from . ' SET ';
         $values = [];
@@ -62,7 +84,8 @@ trait PersistentTrait {
         return false;
     }
 
-    public function delete(){
+    public function delete()
+    {
         $query = 'DELETE FROM ' . $this->from;
 
         if (!is_null($this->where)){

@@ -4,8 +4,8 @@ namespace Phacil\Integration\ORM;
 
 trait AssociationTrait {
    
-    private function assoc_table_name($base_namespace, $assoc){
-              
+    private function assoc_table_name($base_namespace, $assoc)
+    {              
         if($assoc['to'] == 'table'){
             $table = strtolower($assoc['name']);
             $table .= !is_null($assoc['alias'])?' as '. $assoc['alias']:null;
@@ -27,8 +27,8 @@ trait AssociationTrait {
         return $parentObject->table_name();        
     }
     
-    private function assoc_alias($base_namespace, $assoc){
-        
+    private function assoc_alias($base_namespace, $assoc)
+    {        
         //pr($assoc); exit;
         if($assoc['to'] == 'table'){
             $alias = !is_null($assoc['alias'])?$assoc['alias']:$assoc['name'];
@@ -97,8 +97,14 @@ trait AssociationTrait {
         return null;
     }
     
-    public function hooks(){
+    public function hooks()
+    {
         return $this->hooks;
+    }
+    
+    public function validate()
+    {
+        return $this->validate;
     }
     
 }

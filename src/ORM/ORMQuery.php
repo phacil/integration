@@ -29,10 +29,10 @@ class ORMQuery extends Query{
     }
 
     public function getAll($array = false, $all = false, $reset = true){
+                
+        $query = $this->beforeFind($this)->buildQuery();
         
-        $query = $this->buildQuery();
-        
-        $result = $this->query($this->beforeFind($query), $all, $array, $reset);
+        $result = $this->query($query, $all, $array, $reset);
                 
 	$collection = [];
         
@@ -81,12 +81,13 @@ class ORMQuery extends Query{
         
         $pdo = Integration::exec(Integration::getActualConfig());
         $connection = new self($pdo);
-               
+        
         if(method_exists($connection, $name)){
             $query =  call_user_func_array(array($connection, $name), $arguments);
         }else{
             $connection->model = $name;
             $query = call_user_func_array(array($connection,'from'), (array) $name);
+            
             if(!empty($arguments)){
                 $query = call_user_func_array(array($query,'where'), $arguments);
             }
@@ -100,6 +101,11 @@ class ORMQuery extends Query{
     
     public function setHooks($hooks){
         $this->hooks = $hooks;
+        return $this;
+    }
+    
+    public function setValidation($validate){
+        $this->validate = $validate;
         return $this;
     }
     

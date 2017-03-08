@@ -23,5 +23,5 @@ trait UtilsTrait {
             return $prefix . $var . $sulfix;
         }        
         return null;
-    } 
+    }
 }
