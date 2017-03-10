@@ -6,7 +6,7 @@ class Model {
     
     use AssociationTrait;
     
-    private $associations;
+    private $associations = [];
     public  $table_name;
     private $table_alias;
     public  $primary_key;

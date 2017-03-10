@@ -45,7 +45,7 @@ class ORMQuery extends Query{
             foreach($this->children as $child){
 
                 $_table_name = $this->assoc_table_name(ORMQuery::$baseNamespace, $child);
-                //print_r($_table_name);
+                //print_r($child);
 
                 if($this->isClass($child['name'])){
                     $_class = ucwords($child['name'], ' \\');
@@ -65,7 +65,7 @@ class ORMQuery extends Query{
                             ->where([$n_m . '.' . $child['options']['foreign_key']=>
                             $_data[$this->model.'.id']]); 
                 }else{
-                    $query->where([$_table_name . '.' . $child['options']['foreign_key']=>
+                    $query->where([$child['alias'] . '.' . $child['options']['foreign_key']=>
                             $_data[$this->model.'.id']]);        
                 }
                 $data->{$_table_name} = $query->get();
