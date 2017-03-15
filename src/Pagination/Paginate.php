@@ -56,22 +56,34 @@ class Paginate {
         return $this->limit;
     }
 
-    public function page($page) {
+    public function page($page = null) {
+        if(!$page){
+            return $this->page;
+        }
         $this->args['page'] = $this->page = $page;
         return $this;
     }
 
     public function orderBy($orderBy) {
+        if(!$orderBy){
+            return $this->orderBy;
+        }
         $this->args['order'] = $this->orderBy = $orderBy;
         return $this;
     }
 
     public function direction($direction) {
+        if(!$direction){
+            return $this->direction;
+        }
         $this->args['direction'] = $this->direction = $direction;
         return $this;
     }
 
     public function limit($limit) {
+        if(!$limit){
+            return $this->limit;
+        }
         $this->args['limit'] = $this->limit = $limit;
         return $this;
     }
@@ -206,6 +218,20 @@ class Paginate {
         $direction = self::__direction($field);
         $rota = (new Route)->args(array('order'=>$field, 'direction'=>  $direction));
         return Html::a($text)->href($rota)->output();
+    }
+    
+    public static function container($container) {
+        if(!$container){
+            return self::$container;
+        }
+        self::$container = array_merge( self::$container, $container);        
+    }
+    
+    public static function listNumbers($list) {
+        if(!$list){
+            return self::$list;
+        }
+        self::$list = array_merge( self::$list, $list);
     }
     
 }
