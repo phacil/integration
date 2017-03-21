@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "fde8260db7d94bcf8c761c63810ca0cd",
-    "content-hash": "02fb9fa5ee523461a256b85e9dd3b134",
+    "hash": "dfe0e9799cc88fa9f992e776cea0ec45",
+    "content-hash": "8465d03db8af20a849913e42f979a56b",
     "packages": [
         {
             "name": "icanboogie/inflector",
@@ -65,12 +65,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/phacil/html.git",
-                "reference": "da7d135c52aa68a198e89eb626d8bc88b758aaaf"
+                "reference": "1f884c2d57e2fd6eaf3ffb00339f5aba94fa9d51"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phacil/html/zipball/da7d135c52aa68a198e89eb626d8bc88b758aaaf",
-                "reference": "da7d135c52aa68a198e89eb626d8bc88b758aaaf",
+                "url": "https://api.github.com/repos/phacil/html/zipball/1f884c2d57e2fd6eaf3ffb00339f5aba94fa9d51",
+                "reference": "1f884c2d57e2fd6eaf3ffb00339f5aba94fa9d51",
                 "shasum": ""
             },
             "require": {
@@ -109,7 +109,7 @@
                 "source": "https://github.com/phacil/html/tree/development",
                 "issues": "https://github.com/phacil/html/issues"
             },
-            "time": "2017-01-16 00:22:58"
+            "time": "2017-03-16 05:53:51"
         },
         {
             "name": "phacil/http",
@@ -117,12 +117,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/phacil/http.git",
-                "reference": "51f5543677a971d8e51f0d3e8e508f92ebac327e"
+                "reference": "38fde9011def2482b4c09388a1a5eae5a323cb5e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phacil/http/zipball/51f5543677a971d8e51f0d3e8e508f92ebac327e",
-                "reference": "51f5543677a971d8e51f0d3e8e508f92ebac327e",
+                "url": "https://api.github.com/repos/phacil/http/zipball/38fde9011def2482b4c09388a1a5eae5a323cb5e",
+                "reference": "38fde9011def2482b4c09388a1a5eae5a323cb5e",
                 "shasum": ""
             },
             "require": {
@@ -162,56 +162,20 @@
                 "source": "https://github.com/phacil/http/tree/development",
                 "issues": "https://github.com/phacil/http/issues"
             },
-            "time": "2017-01-16 00:18:41"
-        },
-        {
-            "name": "simple-validator/simple-validator",
-            "version": "1.0.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/cangelis/simple-validator.git",
-                "reference": "469711d7bcd577220cc943d03d4966f6995750e2"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/cangelis/simple-validator/zipball/469711d7bcd577220cc943d03d4966f6995750e2",
-                "reference": "469711d7bcd577220cc943d03d4966f6995750e2",
-                "shasum": ""
-            },
-            "require": {
-                "php": ">=5.3.0"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-0": {
-                    "SimpleValidator\\": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Can Gelis",
-                    "email": "geliscan@gmail.com"
-                }
-            ],
-            "description": "Yet another validation class for PHP",
-            "time": "2017-01-23 11:02:27"
+            "time": "2017-03-16 05:51:59"
         },
         {
             "name": "symfony/http-foundation",
-            "version": "v3.2.4",
+            "version": "v3.2.6",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/http-foundation.git",
-                "reference": "a90da6dd679605d88c9803a57a6fc1fb7a19a6e0"
+                "reference": "c57009887010eb4e58bfca2970314a5b820b24b9"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/http-foundation/zipball/a90da6dd679605d88c9803a57a6fc1fb7a19a6e0",
-                "reference": "a90da6dd679605d88c9803a57a6fc1fb7a19a6e0",
+                "url": "https://api.github.com/repos/symfony/http-foundation/zipball/c57009887010eb4e58bfca2970314a5b820b24b9",
+                "reference": "c57009887010eb4e58bfca2970314a5b820b24b9",
                 "shasum": ""
             },
             "require": {
@@ -251,7 +215,7 @@
             ],
             "description": "Symfony HttpFoundation Component",
             "homepage": "https://symfony.com",
-            "time": "2017-02-16 22:46:52"
+            "time": "2017-03-04 12:23:14"
         },
         {
             "name": "symfony/polyfill-mbstring",
@@ -894,16 +858,16 @@
         },
         {
             "name": "symfony/yaml",
-            "version": "v2.8.17",
+            "version": "v2.8.18",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/yaml.git",
-                "reference": "322a8c2dfbca15ad6b1b27e182899f98ec0e0153"
+                "reference": "2a7bab3c16f6f452c47818fdd08f3b1e49ffcf7d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/yaml/zipball/322a8c2dfbca15ad6b1b27e182899f98ec0e0153",
-                "reference": "322a8c2dfbca15ad6b1b27e182899f98ec0e0153",
+                "url": "https://api.github.com/repos/symfony/yaml/zipball/2a7bab3c16f6f452c47818fdd08f3b1e49ffcf7d",
+                "reference": "2a7bab3c16f6f452c47818fdd08f3b1e49ffcf7d",
                 "shasum": ""
             },
             "require": {
@@ -939,7 +903,7 @@
             ],
             "description": "Symfony Yaml Component",
             "homepage": "https://symfony.com",
-            "time": "2017-01-21 16:40:50"
+            "time": "2017-03-01 18:13:50"
         }
     ],
     "aliases": [],

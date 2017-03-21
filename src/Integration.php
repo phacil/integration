@@ -42,25 +42,8 @@ class Integration {
     public static function exec($configName = 'default'){
         
         $config = self::getConfig($configName);
+        $adapter = "\\Phacil\Integration\\Adapter\\" . ucfirst($config['driver']);
         
-        if ($config['driver'] == 'mysql' || $config['driver'] == '' || $config['driver'] == 'pgsql'){
-            $dsn = $config['driver'] . ':host=' . $config['host'] . ';dbname=' . $config['database'];
-        }elseif ($config['driver'] == 'sqlite'){
-            $dsn = 'sqlite:' . $config['database'];
-        }elseif($config['driver'] == 'oracle'){
-            $dsn = 'oci:dbname=' . $config['host'] . '/' . $config['database'];
-        }
-
-        try{
-            $pdo = new PDO($dsn, $config['username'], $config['password']);
-            $pdo->exec("SET NAMES '".$config['charset']."' COLLATE '".$config['collation']."'");
-            $pdo->exec("SET CHARACTER SET '".$config['charset']."'");
-            $pdo->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
-            $pdo->setAttribute(PDO::ATTR_FETCH_TABLE_NAMES, true);
-            
-            return $pdo;
-        }catch (PDOException $e){
-            die('Cannot the connect to Database with PDO.<br /><br />'.$e->getMessage());
-        }        
+        return (new $adapter($config))->connection();
     }
 }
