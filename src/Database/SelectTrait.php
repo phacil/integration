@@ -3,6 +3,10 @@
 namespace Phacil\Integration\Database;
 
 trait SelectTrait {
+    
+    protected $select 	= '*';
+    protected $from 	= null;
+    
     public function select($select='*') {
         if(is_array($select)){
             $this->select = implode(', ', $select);

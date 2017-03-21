@@ -4,7 +4,7 @@ namespace Phacil\Integration\Database;
 
 trait WhereTrait {
     
-    //use PDOUtilsTrait;
+    protected $where 	= null;
     
     public function where($where, $op = null, $val = null, $ao = 'AND'){
         if (is_array($where)){

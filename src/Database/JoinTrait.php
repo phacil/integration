@@ -4,6 +4,9 @@ namespace Phacil\Integration\Database;
 
 trait JoinTrait{
     
+    protected $join 	= null;
+    
+    
     public function join($table, $field1, $op = null, $field2 = null, $join = '') {
         if(is_array($table)){
             $q = '';

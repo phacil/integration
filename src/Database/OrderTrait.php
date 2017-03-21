@@ -1,19 +1,11 @@
 <?php
 
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
 namespace Phacil\Integration\Database;
 
-/**
- * Description of OrderTrait
- *
- * @author alisson
- */
 trait OrderTrait {
+    
+    protected $orderBy 	= null;
+    
     public function orderBy($orderBy, $order_dir = null){
         
         if(is_null($orderBy) || empty($orderBy)){

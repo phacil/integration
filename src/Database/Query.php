@@ -31,15 +31,6 @@ class Query implements IteratorAggregate
     
     public $pdo 	= null;
 
-    protected $select 	= '*';
-    protected $from 	= null;
-    protected $where 	= null;
-    protected $limit 	= null;
-    protected $offset 	= null;
-    protected $join 	= null;
-    protected $orderBy 	= null;
-    protected $groupBy 	= null;
-    protected $having 	= null;
     protected $grouped 	= false;
     protected $numRows 	= 0;
     protected $insertId = null;
