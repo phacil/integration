@@ -19,15 +19,15 @@ use \PDO as PDO;
 
 class Query implements IteratorAggregate
 {
-    use SelectTrait,
-        JoinTrait, 
-        WhereTrait, 
-        GroupTrait, 
-        OrderTrait, 
-        LimitTrait,
-        PersistentTrait,
-        UtilsTrait,
-        HooksTrait;
+    use \Phacil\Integration\Traits\SelectTrait,
+        \Phacil\Integration\Traits\JoinTrait, 
+        \Phacil\Integration\Traits\WhereTrait, 
+        \Phacil\Integration\Traits\GroupTrait, 
+        \Phacil\Integration\Traits\OrderTrait, 
+        \Phacil\Integration\Traits\LimitTrait,
+        \Phacil\Integration\Traits\PersistentTrait,
+        \Phacil\Integration\Traits\UtilsTrait,
+        \Phacil\Integration\Traits\HooksTrait;
     
     public $pdo 	= null;
 

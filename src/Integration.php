@@ -2,8 +2,6 @@
 
 namespace Phacil\Integration;
 
-use \PDO as PDO;
-
 class Integration {
         
     private static $config = 'default';

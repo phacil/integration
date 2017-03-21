@@ -1,6 +1,6 @@
 <?php
 
-namespace Phacil\Integration\ORM;
+namespace Phacil\Integration\Traits;
 
 trait AssociationTrait {
    

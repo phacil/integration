@@ -4,7 +4,7 @@ namespace Phacil\Integration\ORM;
 
 class Model {
     
-    use AssociationTrait;
+    use \Phacil\Integration\Traits\AssociationTrait;
     
     private $associations = [];
     public  $table_name;
