@@ -31,20 +31,20 @@ class Query implements IteratorAggregate
     
     public $pdo 	= null;
 
-    protected $grouped 	= false;
-    protected $numRows 	= 0;
-    protected $insertId = null;
+    public $grouped 	= false;
+    public $numRows 	= 0;
+    public $insertId = null;
     
-    protected $query 	= null;
-    protected $error 	= null;
-    protected $result 	= array();
-    protected $prefix 	= null;
-    protected $op 	= array('=','!=','<','>','<=','>=','<>');
+    public $query 	= null;
+    public $error 	= null;
+    public $result 	= array();
+    public $prefix 	= null;
+    public $op 	= array('=','!=','<','>','<=','>=','<>');
     
-    protected $cache 	= null;
-    protected $cacheDir	= null;
+    public $cache 	= null;
+    public $cacheDir	= null;
     
-    protected $queryCount	= 0;
+    public $queryCount	= 0;
     
     public function __construct($pdo) {
         $this->pdo = $pdo;
@@ -172,8 +172,7 @@ class Query implements IteratorAggregate
         }
         
         $all = ($limit == 1)?false:true;
-        
-        
+                
         return $this->getAll(false, $all, $reset);
     }
     
@@ -222,19 +221,10 @@ class Query implements IteratorAggregate
         }
     }
     
-    protected function buildQuery(){
-        
-        $query = 'SELECT ' . $this->select . ' FROM ' . $this->from;
-        
-        $query .= $this->isNotNullReturn($this->join);
-        $query .= $this->isNotNullReturn($this->where, ' WHERE ');
-        $query .= $this->isNotNullReturn($this->groupBy, ' GROUP BY ');
-        $query .= $this->isNotNullReturn($this->having , ' HAVING ');
-        $query .= $this->isNotNullReturn($this->orderBy, ' ORDER BY ');
-        $query .= $this->isNotNullReturn($this->limit, ' LIMIT ');
-        $query .= $this->isNotNullReturn($this->offset, ' OFFSET ');
-        
-        return $query;
+    protected function buildQuery()
+    {       
+        $adapter = "\\Phacil\Integration\\Adapter\\" . ucfirst($this->pdo->getAttribute(PDO::ATTR_DRIVER_NAME));
+        return (new $adapter())->buildQuery($this);
     }
 
     protected function reset(){

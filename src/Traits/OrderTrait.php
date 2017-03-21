@@ -4,7 +4,7 @@ namespace Phacil\Integration\Traits;
 
 trait OrderTrait {
     
-    protected $orderBy 	= null;
+    public $orderBy 	= null;
     
     public function orderBy($orderBy, $order_dir = null){
         

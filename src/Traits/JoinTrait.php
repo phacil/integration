@@ -4,7 +4,7 @@ namespace Phacil\Integration\Traits;
 
 trait JoinTrait{
     
-    protected $join 	= null;
+    public $join 	= null;
     
     
     public function join($table, $field1, $op = null, $field2 = null, $join = '') {

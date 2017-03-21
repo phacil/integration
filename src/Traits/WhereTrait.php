@@ -4,7 +4,7 @@ namespace Phacil\Integration\Traits;
 
 trait WhereTrait {
     
-    protected $where 	= null;
+    public $where 	= null;
     
     public function where($where, $op = null, $val = null, $ao = 'AND'){
         if (is_array($where)){

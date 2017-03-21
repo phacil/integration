@@ -1,6 +1,7 @@
 <?php
 //PIXIE
 namespace Phacil\Integration\Adapter;
+use Phacil\Integration\Database\Query;
 
 abstract class BaseAdapter
 {
@@ -10,22 +11,12 @@ abstract class BaseAdapter
     protected $pdo = null;
     const SANITIZER = '`';
     /**
-     * @param $config
-     *
-     * @return \PDO
+     * 
      */
-    public function __construct($config)
-    {
-        if (isset($config['options']) === false) {
-            $config['options'] = [];
-        }
-        try {
-            return $this->doConnect($config);
-        } catch (Exception $exc) {
-            echo $exc->getTraceAsString();
-        }
+    public function __construct()
+    {        
     }
-
+    
     /**
      * @param $config
      *
@@ -35,10 +26,36 @@ abstract class BaseAdapter
     
     /**
      * @param $config
-     *
-     * @return mixed
+     * @return PDO
      */
-    public function connection(){
-        return $this->pdo;
+    public function connect($config)
+    {
+        if (isset($config['options']) === false) {
+            $config['options'] = [];
+        }
+        
+        try {
+            return $this->doConnect($config);
+        } catch (Exception $exc) {
+            echo $exc->getTraceAsString();
+        }
     }
+    
+    public function buildQuery(Query $query)
+    {
+        $queryString = 'SELECT ' . $query->select . ' FROM ' . $query->from;
+       
+        $queryString .= $query->isNotNullReturn($query->join);
+        $queryString .= $query->isNotNullReturn($query->where, ' WHERE ');
+        $queryString .= $query->isNotNullReturn($query->groupBy, ' GROUP BY ');
+        $queryString .= $query->isNotNullReturn($query->having , ' HAVING ');
+        $queryString .= $query->isNotNullReturn($query->orderBy, ' ORDER BY ');
+        $queryString .= $query->isNotNullReturn($query->limit, ' LIMIT ');
+        $queryString .= $query->isNotNullReturn($query->offset, ' OFFSET ');
+        
+        return $queryString;
+    }
+    
+    
+    
 }

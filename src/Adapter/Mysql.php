@@ -48,4 +48,5 @@ class Mysql extends BaseAdapter
 
         return $this->pdo;        
     }
+        
 }

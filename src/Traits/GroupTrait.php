@@ -4,8 +4,8 @@ namespace Phacil\Integration\Traits;
 
 trait GroupTrait {
     
-    protected $groupBy 	= null;
-    protected $having 	= null;
+    public $groupBy 	= null;
+    public $having 	= null;
     
     public function groupBy($groupBy) {
         if(is_array($groupBy)){

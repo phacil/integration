@@ -41,7 +41,7 @@ class Integration {
         
         $config = self::getConfig($configName);
         $adapter = "\\Phacil\Integration\\Adapter\\" . ucfirst($config['driver']);
-        
-        return (new $adapter($config))->connection();
+                
+        return (new $adapter())->connect($config);
     }
 }

@@ -4,8 +4,8 @@ namespace Phacil\Integration\Traits;
 
 trait LimitTrait {
     
-    protected $limit 	= null;
-    protected $offset 	= null;
+    public $limit 	= null;
+    public $offset 	= null;
     
     public function limit($limit){
         $this->limit = $limit;

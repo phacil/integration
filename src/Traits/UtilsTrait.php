@@ -8,7 +8,7 @@ trait UtilsTrait {
         return $this->pdo->quote(trim($data));
     }
     
-    private function isNotNullReturn($var, $prefix = null, $sulfix = null){
+    public function isNotNullReturn($var, $prefix = null, $sulfix = null){
         if (!is_null($var)){
             return $prefix . $var . $sulfix;
         }        
