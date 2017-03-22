@@ -22,19 +22,13 @@ trait SelectTrait {
         return $this;
     }
     
-    public function from($from){
+    public function from($from){        
         if(is_array($from)){
-            $f = '';
-            foreach($from as $key => $value){
-                if(is_int($key)){
-                   $value = $key . ' as ' . $value;   
-                }
-                $f .= $this->prefix . $value . ', ';
-            }
-            $this->from = rtrim($f, ', ');
+            $this->from = $from;
         }else{
-            $this->from = $this->prefix . $from;
+            $this->from = explode(',', $from);
         }
         return $this;
     }
+    
 }

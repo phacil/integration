@@ -57,21 +57,26 @@ class Pgsql extends BaseAdapter
         $stmt = $pdo->query($sql);
         $rows = [];
         while($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-            $rows[$alias . '.'. $row['column_name']] = "$alias.{$row['column_name']}";
+            $rows[$alias . '.'. $row['column_name']] = $alias.'.'.$row['column_name'];
         }
         return $rows;
     }
 
-    protected function makeSelect($select, $from = [], $join = [], $pdo = null)
+    protected function makeSelect($select, $froms = [], $join = [], $pdo = null)
     {
+        $rows = [];
         if(current($select) == '*'){
-            $rows = $this->getColunms($from, 'public', $pdo);
+            foreach ($froms as $table => $alias){
+                $from = !is_int($table)?$table:$alias;
+                $rows = array_merge($rows, $this->getColunms($from, 'public', $pdo));
+            }
+            
             foreach ($join as $table => $value) {
                 $rows = array_merge($rows, $this->getColunms($table, 'public', $pdo));
             }
             $select = $rows;
         }
-        $selects = $this->arrayStr($select, 'AS');        
+        $selects = $this->arrayStr($select, 'AS');
         return $selects;
     }
 }

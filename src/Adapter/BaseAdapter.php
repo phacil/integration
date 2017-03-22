@@ -54,7 +54,7 @@ abstract class BaseAdapter
     public function buildQuery(Query $query)
     {
         $queryString  = 'SELECT ' . $this->makeSelect($query->select, $query->from, $query->join, $query->pdo);
-        $queryString .= ' FROM ' . $query->from;
+        $queryString .= ' FROM ' . $this->makeFrom($query->from);
        
         $queryString .= $this->makeJoin($query->join);
         $queryString .= $query->isNotNullReturn($query->where, ' WHERE ');
@@ -68,23 +68,41 @@ abstract class BaseAdapter
     }
     
     /*
+     */
+    
+    public function makeFrom($from)
+    {                        
+        return $this->arrayStr($from, 'AS');;
+    }
+    
+    /*
 
      */ 
     
-    public function makeJoin(array $join) {
+    public function makeJoin(array $join)
+    {
         $joins = null;
         
-        foreach($join as $_table){            
+        foreach($join as $_table){ 
             
-            $where = '('. $_table['field1'] . ' ';
+            if(count(explode(' as ', strtolower($_table['table']))) == 2){
+                list($table, $alias) = explode(' as ', $_table['table']);
+            }else if(count(explode(' ', strtolower($_table['table']))) == 2){
+                list($table, $alias) = explode(' ', strtolower($_table['table']));
+            }else{
+                $alias = $table = $_table['table'];
+            }
+            
+            $_table['table'] = $table . ' AS ' . $this->wrapSanitizer($_table['field1']);
+            
+            $where = '('. $this->wrapSanitizer($_table['field1']). ' ';
             $where .= (in_array($_table['op'],$this->op)?$_table['op']:' = ') . ' ';
-            $where .= $_table['field2'] . ')';
+            $where .= $this->wrapSanitizer($_table['field2']) . ')';
             
             $joins = $joins . ' ' 
                     . $_table['join'] . 'JOIN' . ' ' 
                     . $_table['table'] . ' ON ' . $where;
                 
-          
         }
         
         return $joins;
