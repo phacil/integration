@@ -40,27 +40,38 @@ class Pgsql extends BaseAdapter
         
     }
     
-    protected function getColunms($table, $schema = 'public'){
+    protected function getColunms($table, $schema, $pdo){
+        
+        if(count(explode(' as ', strtolower($table))) == 2){
+            list($table, $alias) = explode(' as ', $table);
+        }else if(count(explode(' ', strtolower($table))) == 2){
+            list($table, $alias) = explode(' ', strtolower($table));
+        }else{
+            $alias = $table;
+        }
         
         $sql = "SELECT *
                 FROM information_schema.columns
                 WHERE table_schema = '{$schema}'
                   AND table_name   = '{$table}'";
-        $cols = $this->pdo->prepare($sql)->execute();
-        pr($cols); exit;
+        $stmt = $pdo->query($sql);
+        $rows = [];
+        while($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $rows[$alias . '.'. $row['column_name']] = "$alias.{$row['column_name']}";
+        }
+        return $rows;
     }
 
-    protected function makeSelect($select, $from = [], $join = [])
+    protected function makeSelect($select, $from = [], $join = [], $pdo = null)
     {
         if(current($select) == '*'){
-            $this->getColunms($from);
-            pr($join);exit;
-        }else if(is_array($select)){
-            $selects = $this->arrayStr($select, 'AS');
-        }else{
-            
+            $rows = $this->getColunms($from, 'public', $pdo);
+            foreach ($join as $table => $value) {
+                $rows = array_merge($rows, $this->getColunms($table, 'public', $pdo));
+            }
+            $select = $rows;
         }
-        
+        $selects = $this->arrayStr($select, 'AS');        
         return $selects;
     }
 }

@@ -32,7 +32,7 @@ abstract class BaseAdapter
      * 
      * @return String
      */
-    abstract protected function makeSelect($select, $from = null, $join = []);
+    abstract protected function makeSelect($select, $from = null, $join = [], $pdo = null);
     
     /**
      * @param $config
@@ -53,7 +53,7 @@ abstract class BaseAdapter
     
     public function buildQuery(Query $query)
     {
-        $queryString  = 'SELECT ' . $this->makeSelect($query->select, $query->from, $query->join);
+        $queryString  = 'SELECT ' . $this->makeSelect($query->select, $query->from, $query->join, $query->pdo);
         $queryString .= ' FROM ' . $query->from;
        
         $queryString .= $this->makeJoin($query->join);
@@ -105,7 +105,7 @@ abstract class BaseAdapter
         $str = '';
         foreach ($pieces as $key => $piece) {
             if ($wrapSanitizer) {
-                $piece = $this->wrapSanitizer($piece);
+                $piece = $this->wrapSanitizer($piece, true);
             }
 
             if (!is_int($key)) {
@@ -125,7 +125,7 @@ abstract class BaseAdapter
      *
      * @return string
      */
-    protected function wrapSanitizer($value)
+    protected function wrapSanitizer($value, $ignorePoint = false)
     {
 //      Its a raw query, just cast as string, object has __toString()
         //pr($value);
@@ -136,11 +136,16 @@ abstract class BaseAdapter
         }
 
         // Separate our table and fields which are joined with a ".", like my_table.id
+        if(strpos($value, '*') === false && $ignorePoint){
+            return static::SANITIZER . $value . static::SANITIZER;
+        }
+        
         $valueArr = explode('.', $value, 2);
-
         foreach ($valueArr as $key => $subValue) {
             // Don't wrap if we have *, which is not a usual field
-            $valueArr[$key] = trim($subValue) === '*' ? $subValue : static::SANITIZER . $subValue . static::SANITIZER;
+            $valueArr[$key] = trim($subValue) === '*'
+                              ? $subValue 
+                              : static::SANITIZER . $subValue . static::SANITIZER;
         }
 
         // Join these back with "." and return
