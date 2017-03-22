@@ -153,7 +153,7 @@ class Paginate {
         $this->query_clone->offset(null);
 
         $total_records = $this->query_clone
-                                ->select('COUNT(*) as count')
+                                ->select(raw('COUNT(*) as count'))
                                 ->get(1);
 
         return $total_records->count;

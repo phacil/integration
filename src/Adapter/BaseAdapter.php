@@ -10,6 +10,7 @@ abstract class BaseAdapter
      */
     protected $pdo = null;
     const SANITIZER = '`';
+    protected $op = array('=','!=','<','>','<=','>=','<>');
     /**
      * 
      */
@@ -23,6 +24,15 @@ abstract class BaseAdapter
      * @return mixed
      */
     abstract protected function doConnect($config);
+    
+    /**
+     * @param midex $select
+     * @param mixed $from
+     * @param mixed $join
+     * 
+     * @return String
+     */
+    abstract protected function makeSelect($select, $from = null, $join = []);
     
     /**
      * @param $config
@@ -43,9 +53,10 @@ abstract class BaseAdapter
     
     public function buildQuery(Query $query)
     {
-        $queryString = 'SELECT ' . $query->select . ' FROM ' . $query->from;
+        $queryString  = 'SELECT ' . $this->makeSelect($query->select, $query->from, $query->join);
+        $queryString .= ' FROM ' . $query->from;
        
-        $queryString .= $query->isNotNullReturn($query->join);
+        $queryString .= $this->makeJoin($query->join);
         $queryString .= $query->isNotNullReturn($query->where, ' WHERE ');
         $queryString .= $query->isNotNullReturn($query->groupBy, ' GROUP BY ');
         $queryString .= $query->isNotNullReturn($query->having , ' HAVING ');
@@ -56,6 +67,84 @@ abstract class BaseAdapter
         return $queryString;
     }
     
+    /*
+
+     */ 
     
+    public function makeJoin(array $join) {
+        $joins = null;
+        
+        foreach($join as $_table){            
+            
+            $where = '('. $_table['field1'] . ' ';
+            $where .= (in_array($_table['op'],$this->op)?$_table['op']:' = ') . ' ';
+            $where .= $_table['field2'] . ')';
+            
+            $joins = $joins . ' ' 
+                    . $_table['join'] . 'JOIN' . ' ' 
+                    . $_table['table'] . ' ON ' . $where;
+                
+          
+        }
+        
+        return $joins;
+    }
+    
+    /**
+     * Array concatenating method, like implode.
+     * But it does wrap sanitizer and trims last glue
+     *
+     * @param array $pieces
+     * @param       $glue
+     * @param bool $wrapSanitizer
+     *
+     * @return string
+     */
+    protected function arrayStr(array $pieces, $gluePiece = ' ', $glue = ',', $wrapSanitizer = true)
+    {
+        $str = '';
+        foreach ($pieces as $key => $piece) {
+            if ($wrapSanitizer) {
+                $piece = $this->wrapSanitizer($piece);
+            }
+
+            if (!is_int($key)) {
+                $piece = ($wrapSanitizer ? $this->wrapSanitizer($key) : $key) . ' ' . $gluePiece . ' ' . $piece;
+            }
+
+            $str .= $piece . $glue;
+        }
+
+        return trim($str, $glue);
+    }
+    
+    /**
+     * Wrap values with adapter's sanitizer like, '`'
+     *
+     * @param $value
+     *
+     * @return string
+     */
+    protected function wrapSanitizer($value)
+    {
+//      Its a raw query, just cast as string, object has __toString()
+        //pr($value);
+        if ($value instanceof \Phacil\Integration\Database\Raw) {
+            return (string)$value;
+        } elseif ($value instanceof \Closure) {
+            return $value;
+        }
+
+        // Separate our table and fields which are joined with a ".", like my_table.id
+        $valueArr = explode('.', $value, 2);
+
+        foreach ($valueArr as $key => $subValue) {
+            // Don't wrap if we have *, which is not a usual field
+            $valueArr[$key] = trim($subValue) === '*' ? $subValue : static::SANITIZER . $subValue . static::SANITIZER;
+        }
+
+        // Join these back with "." and return
+        return implode('.', $valueArr);
+    }
     
 }

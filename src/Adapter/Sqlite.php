@@ -21,7 +21,12 @@ class Sqlite extends BaseAdapter
             $options = array_merge([], $config['options']);
         }
 
-        $this->pdo = new PDO($connectionString, null, null, $options);
+        $this->pdo = new PDO($connectionString, null, null);
         
+        foreach ($config['options'] as $attr => $value) {
+            $this->pdo->setAttribute($attr , $value);
+        }
+        
+        return $this->pdo;        
     }
 }

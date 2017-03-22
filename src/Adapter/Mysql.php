@@ -8,6 +8,7 @@ class Mysql extends BaseAdapter
      * @var string
      */
     const SANITIZER = '`';
+        
     /**
      * @param $config
      *
@@ -29,15 +30,14 @@ class Mysql extends BaseAdapter
             $connectionString .= ";unix_socket={$config['unix_socket']}";
         }
         
-        if(isset($config['options'])){
-            $options = array_merge([
-                PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
-                PDO::ATTR_FETCH_TABLE_NAMES => true
-            ], $config['options']);
+        $this->pdo = new PDO($connectionString, $config['username'], $config['password']);
+
+        $this->pdo->setAttribute(PDO::ATTR_FETCH_TABLE_NAMES , true);
+        
+        foreach ($config['options'] as $attr => $value) {
+            $this->pdo->setAttribute($attr , $value);
         }
-
-        $this->pdo = new PDO($connectionString, $config['username'], $config['password'], $options);
-
+        
         if (isset($config['charset'])) {
             $this->pdo->prepare("SET NAMES '{$config['charset']}'")->execute();
         }
@@ -46,7 +46,17 @@ class Mysql extends BaseAdapter
             $this->pdo->prepare("SET NAMES '".$config['charset']."' COLLATE '".$config['collation']."'")->execute();
         }
 
-        return $this->pdo;        
-    }
+        return $this->pdo;
+    }  
+    
+    protected function makeSelect($select, $from = null, $join = array())
+    {
+        if(current($select) == '*'){
+            $selects = '*';
+        }else{
+            $selects = $this->arrayStr($select, 'AS');
+        }
         
+        return $selects;
+    }
 }

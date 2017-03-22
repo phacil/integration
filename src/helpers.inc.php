@@ -3,6 +3,7 @@
 use Phacil\Integration\Integration;
 use Phacil\Integration\Database\Query;
 use Phacil\Integration\Pagination\Paginate;
+use Phacil\Integration\Database\Raw;
 
 /**
  * 
@@ -23,4 +24,12 @@ function paginate(){
         return Paginate::getInstance();
     }
     return new Paginate();
+}
+
+/**
+ * 
+ * @return \Phacil\Integration\Pagination\Raw
+ */
+function raw($value, $bindings = []){
+    return new Raw($value, $bindings);
 }

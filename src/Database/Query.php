@@ -16,6 +16,7 @@ use Phacil\Integration\Integration;
 use \IteratorAggregate;
 use \ArrayIterator;
 use \PDO as PDO;
+use Phacil\Integration\Database\Raw;
 
 class Query implements IteratorAggregate
 {
@@ -39,8 +40,7 @@ class Query implements IteratorAggregate
     public $error 	= null;
     public $result 	= array();
     public $prefix 	= null;
-    public $op 	= array('=','!=','<','>','<=','>=','<>');
-    
+       
     public $cache 	= null;
     public $cacheDir	= null;
     
@@ -279,6 +279,10 @@ class Query implements IteratorAggregate
                 return call_user_func_array(array($connection2,'where'), $arguments);
             }
         }
+    }
+    
+    public function raw($value, $bindings = []){
+        return new Raw($value, $bindings);
     }
  
     public function getNumRows(){

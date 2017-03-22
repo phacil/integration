@@ -7,7 +7,7 @@ use Phacil\Integration\Integration;
 
 class ORMQuery extends Query{
     
-    use AssociationTrait;
+    use \Phacil\Integration\Traits\AssociationTrait;
     
     public $model;
     public $children = [];
