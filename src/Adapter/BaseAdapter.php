@@ -82,8 +82,8 @@ abstract class BaseAdapter
     public function makeJoin(array $join)
     {
         $joins = null;
-        
-        foreach($join as $_table){ 
+//        pr($join);
+        foreach($join as $_table){
             
             if(count(explode(' as ', strtolower($_table['table']))) == 2){
                 list($table, $alias) = explode(' as ', $_table['table']);
@@ -93,7 +93,7 @@ abstract class BaseAdapter
                 $alias = $table = $_table['table'];
             }
             
-            $_table['table'] = $table . ' AS ' . $this->wrapSanitizer($_table['field1']);
+            $_table['table'] = $table . ' AS ' . $this->wrapSanitizer($alias);
             
             $where = '('. $this->wrapSanitizer($_table['field1']). ' ';
             $where .= (in_array($_table['op'],$this->op)?$_table['op']:' = ') . ' ';
@@ -102,7 +102,7 @@ abstract class BaseAdapter
             $joins = $joins . ' ' 
                     . $_table['join'] . 'JOIN' . ' ' 
                     . $_table['table'] . ' ON ' . $where;
-                
+//             pr($_table);exit;  
         }
         
         return $joins;
